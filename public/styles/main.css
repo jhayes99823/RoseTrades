@@ -1,12 +1,27 @@
 body {
-    background: #DDDDDD;
+  background: #dddddd;
 }
 
-.navbar {
-    background-color: #800000;
-    color: white;
+body,
+html {
+  height: 100%;
 }
 
 .page-container {
-    margin-top: 75px;
+  margin-top: 75px;
+}
+
+#sidebar .nav-item {
+}
+
+#sidebar .nav-item .nav-link {
+  background-color: #ff4d00;
+  margin: 15px 35px;
+  text-align: center;
+  border-radius: 35px;
+  color: white;
+}
+
+.selected-sidebar-item {
+  box-shadow: 6px 3px 3px black;
 }
