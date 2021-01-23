@@ -31,3 +31,9 @@ html {
   border-radius: 15px;
   color: white;
 }
+
+#search-bar button {
+  background-color: #ff4d00;
+  border-radius: 5px;
+  color: white;
+}
