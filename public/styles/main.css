@@ -25,3 +25,9 @@ html {
 .selected-sidebar-item {
   box-shadow: 6px 3px 3px black;
 }
+
+.card button {
+  background-color: #ff4d00;
+  border-radius: 15px;
+  color: white;
+}
