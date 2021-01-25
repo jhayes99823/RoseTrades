@@ -31,6 +31,12 @@ html {
     color: white;
 }
 
+.main-btn {
+    background-color: #ff4d00;
+    border-radius: 5px;
+    color: white;
+}
+
 #search-bar button {
     background-color: #ff4d00;
     border-radius: 5px;
@@ -41,28 +47,25 @@ html {
     position: fixed;
     top: 40%;
     left: 50%;
-    /* bring your own prefixes */
     transform: translate(-50%, -50%);
     text-align: center;
 }
 
-@media (min-width: 578px){
+@media (min-width: 578px) {
 
-    #welcomeTitle{
+    #welcomeTitle {
         position: relative;
-        left: -9px;
         color: #343A40;
         font-family: Georgia;
         text-align: center;
         font-size: 50px;
-        width: 300px;
         margin: 100px 0px 50px;
     }
 
-    #loginButton{
+    #loginButton {
         position: relative;
         background-color: #ff4d00;
-        color:white;
+        color: white;
         font-family: Georgia;
         text-align: center;
         padding: 10px 35px;
@@ -70,4 +73,8 @@ html {
         margin-top: 50px;
     }
 
+}
+
+.form-group {
+    width: 500px;
 }
