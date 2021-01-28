@@ -121,8 +121,21 @@ rhit.LoginPageController = class {
 }
 
 rhit.MainPageController = class {
+
+	static NAV_TABS = {
+		FURNITURE: "furniture",
+		BOOKS: "books",
+		ELECTRONICS: "electronics",
+		FOOD: "food",
+		ALL: "all"
+	}
+
 	constructor() {
 		console.log('im the main page controller')
+		
+		this._currentTab = rhit.MainPageController.NAV_TABS.ALL;
+		this._previousTab = null;
+
 		document.querySelector("#logoutBtn").onclick = (event) => {
 			rhit.fbAuthManager.signOut();
 		}
@@ -130,10 +143,47 @@ rhit.MainPageController = class {
 		document.querySelector("#profileBtn").onclick = (event) => {
 			window.location.href = "/profile-page.html";
 		}
+
+		document.querySelectorAll(".side-bar-nav").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				console.log(item.id);
+				console.log('will this work   ', rhit.MainPageController.NAV_TABS.ALL === 'all')
+				this._setCurrentTab(item.id);
+			});
+		});
+	}
+
+	_setCurrentTab(newTabName) {
+		console.log('curr tab   ', this._currentTab);
+		console.log('prev tab   ', this._previousTab);
+
+		// address styles on page
+		if (this._previousTab != null) {
+			$("#" + this._previousTab).removeClass("selected-sidebar-item");
+		}
+		$("#" + newTabName).addClass("selected-sidebar-item");
+		if (this._previousTab != null) {
+			$("#" + this._previousTab).removeClass("selected-sidebar-item");
+		}
+		// address javascript variables
+		this._previousTab = this._currentTab;
+		this._currentTab = newTabName;
+
+		console.log('curr tab   ', this._currentTab);
+		console.log('prev tab   ', this._previousTab);
 	}
 }
 
 rhit.ProfilePageController = class {
+
+	static NAV_TABS = {
+		ACCOUNT: "account",
+		CHATS: "chats",
+		FAVORITES: "favorites",
+		MY_ITEMS: "my_items",
+		APPOINTMENTS: "appointments"
+	}
+
 	constructor() {
 		console.log('im the profile page controller');
 
