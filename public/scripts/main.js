@@ -103,10 +103,16 @@ rhit.checkForRedirects = function () {
 		console.log("You are on the main listing page");
 		new rhit.MainPageController();
 	}
+
+	if (document.querySelector("#profilePage")) {
+		console.log("You are on the profile page");
+		new rhit.ProfilePageController();
+	}
   }
 
 rhit.LoginPageController = class {
 	constructor() {
+		console.log('im the login page controller')
 		document.querySelector("#loginButton").onclick = (event) => {
 			console.log('made it here');
 		  rhit.fbAuthManager.signIn();
@@ -116,8 +122,23 @@ rhit.LoginPageController = class {
 
 rhit.MainPageController = class {
 	constructor() {
+		console.log('im the main page controller')
 		document.querySelector("#logoutBtn").onclick = (event) => {
 			rhit.fbAuthManager.signOut();
+		}
+
+		document.querySelector("#profileBtn").onclick = (event) => {
+			window.location.href = "/profile-page.html";
+		}
+	}
+}
+
+rhit.ProfilePageController = class {
+	constructor() {
+		console.log('im the profile page controller');
+
+		document.querySelector("#homeBtn").onclick = (event) => {
+			window.location.href = "/main-list.html";
 		}
 	}
 }
