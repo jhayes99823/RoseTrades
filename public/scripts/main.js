@@ -146,31 +146,16 @@ rhit.MainPageController = class {
 
 		document.querySelectorAll(".side-bar-nav").forEach((item) => {
 			item.addEventListener("click", (event) => {
-				console.log(item.id);
-				console.log('will this work   ', rhit.MainPageController.NAV_TABS.ALL === 'all')
 				this._setCurrentTab(item.id);
 			});
 		});
 	}
 
 	_setCurrentTab(newTabName) {
-		console.log('curr tab   ', this._currentTab);
-		console.log('prev tab   ', this._previousTab);
-
-		// address styles on page
-		if (this._previousTab != null) {
-			$("#" + this._previousTab).removeClass("selected-sidebar-item");
-		}
 		$("#" + newTabName).addClass("selected-sidebar-item");
-		if (this._previousTab != null) {
-			$("#" + this._previousTab).removeClass("selected-sidebar-item");
-		}
-		// address javascript variables
 		this._previousTab = this._currentTab;
+		$("#" + this._previousTab).removeClass("selected-sidebar-item");
 		this._currentTab = newTabName;
-
-		console.log('curr tab   ', this._currentTab);
-		console.log('prev tab   ', this._previousTab);
 	}
 }
 
@@ -187,9 +172,25 @@ rhit.ProfilePageController = class {
 	constructor() {
 		console.log('im the profile page controller');
 
+		this._currentTab = rhit.ProfilePageController.NAV_TABS.ACCOUNT;
+		this._previousTab = null;
+
 		document.querySelector("#homeBtn").onclick = (event) => {
 			window.location.href = "/main-list.html";
 		}
+
+		document.querySelectorAll(".side-bar-nav").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				this._setCurrentTab(item.id);
+			});
+		});
+	}
+
+	_setCurrentTab(newTabName) {
+		$("#" + newTabName).addClass("selected-sidebar-item");
+		this._previousTab = this._currentTab;
+		$("#" + this._previousTab).removeClass("selected-sidebar-item");
+		this._currentTab = newTabName;
 	}
 }
 
