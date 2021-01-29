@@ -121,8 +121,21 @@ rhit.LoginPageController = class {
 }
 
 rhit.MainPageController = class {
+
+	static NAV_TABS = {
+		FURNITURE: "furniture",
+		BOOKS: "books",
+		ELECTRONICS: "electronics",
+		FOOD: "food",
+		ALL: "all"
+	}
+
 	constructor() {
 		console.log('im the main page controller')
+		
+		this._currentTab = rhit.MainPageController.NAV_TABS.ALL;
+		this._previousTab = null;
+
 		document.querySelector("#logoutBtn").onclick = (event) => {
 			rhit.fbAuthManager.signOut();
 		}
@@ -130,16 +143,54 @@ rhit.MainPageController = class {
 		document.querySelector("#profileBtn").onclick = (event) => {
 			window.location.href = "/profile-page.html";
 		}
+
+		document.querySelectorAll(".side-bar-nav").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				this._setCurrentTab(item.id);
+			});
+		});
+	}
+
+	_setCurrentTab(newTabName) {
+		$("#" + newTabName).addClass("selected-sidebar-item");
+		this._previousTab = this._currentTab;
+		$("#" + this._previousTab).removeClass("selected-sidebar-item");
+		this._currentTab = newTabName;
 	}
 }
 
 rhit.ProfilePageController = class {
+
+	static NAV_TABS = {
+		ACCOUNT: "account",
+		CHATS: "chats",
+		FAVORITES: "favorites",
+		MY_ITEMS: "my_items",
+		APPOINTMENTS: "appointments"
+	}
+
 	constructor() {
 		console.log('im the profile page controller');
+
+		this._currentTab = rhit.ProfilePageController.NAV_TABS.ACCOUNT;
+		this._previousTab = null;
 
 		document.querySelector("#homeBtn").onclick = (event) => {
 			window.location.href = "/main-list.html";
 		}
+
+		document.querySelectorAll(".side-bar-nav").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				this._setCurrentTab(item.id);
+			});
+		});
+	}
+
+	_setCurrentTab(newTabName) {
+		$("#" + newTabName).addClass("selected-sidebar-item");
+		this._previousTab = this._currentTab;
+		$("#" + this._previousTab).removeClass("selected-sidebar-item");
+		this._currentTab = newTabName;
 	}
 }
 
