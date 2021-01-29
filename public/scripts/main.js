@@ -79,6 +79,10 @@ rhit.FbAuthManager = class {
 		return this._user.uid;
 	  }
 
+	  get firebaseId() {
+		  return this._user.id;
+	  }
+
 	  _splitName(user) {
 		  return user.split(" ");
 	  }
@@ -152,10 +156,12 @@ rhit.MainPageController = class {
 	}
 
 	_setCurrentTab(newTabName) {
-		$("#" + newTabName).addClass("selected-sidebar-item");
-		this._previousTab = this._currentTab;
-		$("#" + this._previousTab).removeClass("selected-sidebar-item");
-		this._currentTab = newTabName;
+		if (newTabName != this._currentTab) {
+			$("#" + newTabName).addClass("selected-sidebar-item");
+			this._previousTab = this._currentTab;
+			$("#" + this._previousTab).removeClass("selected-sidebar-item");
+			this._currentTab = newTabName;
+		}
 	}
 }
 
@@ -174,7 +180,13 @@ rhit.ProfilePageController = class {
 
 		this._currentTab = rhit.ProfilePageController.NAV_TABS.ACCOUNT;
 		this._previousTab = null;
+		this._userRef = firebase
+						.firestore()
+						.collection(rhit.FB_COLLECTION_USERS)
+						.doc(rhit.fbAuthManager.uid);
 
+		console.log('this._userRef', this._userRef);
+						
 		document.querySelector("#homeBtn").onclick = (event) => {
 			window.location.href = "/main-list.html";
 		}
@@ -182,16 +194,30 @@ rhit.ProfilePageController = class {
 		document.querySelectorAll(".side-bar-nav").forEach((item) => {
 			item.addEventListener("click", (event) => {
 				this._setCurrentTab(item.id);
+				console.log(rhit.fbAuthManager.user);
 			});
 		});
 	}
 
 	_setCurrentTab(newTabName) {
-		$("#" + newTabName).addClass("selected-sidebar-item");
-		this._previousTab = this._currentTab;
-		$("#" + this._previousTab).removeClass("selected-sidebar-item");
-		this._currentTab = newTabName;
+		if (newTabName != this._currentTab) {
+			// unhide and update side nav views
+			$("#" + newTabName).addClass("selected-sidebar-item");
+			$("#" + newTabName + "-div").attr("hidden", false);
+
+			// update old view and hide and update side nav views
+			this._previousTab = this._currentTab;
+			$("#" + this._previousTab).removeClass("selected-sidebar-item");
+			$("#" + this._previousTab + "-div").attr("hidden", true);
+			this._currentTab = newTabName;
+		}
 	}
+
+	// _updateDivView() {
+	// 	if (this._currentTab === rhit.ProfilePageController.NAV_TABS.ACCOUNT) {
+	// 		document.querySelector("#fname").value = 
+	// 	}
+	// }
 }
 
 /* Main */
