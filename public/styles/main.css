@@ -65,10 +65,17 @@ html {
     flex-direction: column;
     background-color: #616366;
 }
+
+#rowSchedule .col{
+    flex-basis: 0;
+    max-width: 100%;
+}
+
+
 .scheduleButton{
-    
     color: white;
 }
+
 
 @media (min-width: 578px) {
 
