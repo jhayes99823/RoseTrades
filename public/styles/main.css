@@ -72,8 +72,13 @@ html {
 }
 
 
+
 .scheduleButton{
     color: white;
+}
+
+.schedule-tag{
+    margin-left: auto;
 }
 
 
