@@ -11,7 +11,11 @@ html {
     margin-top: 75px;
 }
 
-#sidebar .nav-item {}
+#profilePagetagOne{
+    margin-left: 130px;
+    margin-bottom: 10px;;
+}
+
 
 #sidebar .nav-item .nav-link {
     background-color: #ff4d00;
@@ -49,6 +53,21 @@ html {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+#scheduleSelectMon{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin: 0px;
+}
+#buttonGroup{
+    flex-direction: column;
+    background-color: #616366;
+}
+.scheduleButton{
+    
+    color: white;
 }
 
 @media (min-width: 578px) {
@@ -90,6 +109,5 @@ html {
         margin-top: 50px;
     }
 }
-
 
 
