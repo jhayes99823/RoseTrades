@@ -99,3 +99,18 @@ html {
 #updateAccountBtn {
     margin-left: 35%;
 }
+
+#scheduleSelectMon{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin: 0px;
+}
+#buttonGroup{
+    flex-direction: column;
+    background-color: #616366;
+}
+.scheduleButton{
+
+    color: white;
+}
