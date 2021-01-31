@@ -55,23 +55,25 @@
       <!--/col-->
 
       <div class="col main pt-5 mt-3">
-        <!-- START ACCOUNT DIV DISPLAY-->
-        <div id="account-div" class="container">
-          <div class="account-settings-form">
-            <div class="form-group bmd-form-group">
-              <label for="fname">First Name</label>
-                <input type="text" class="form-control" id="fname" placeholder="Enter First Name">
-            </div>
-            <div class="form-group bmd-form-group">
-                <label for="lname">Last Name</label>
-                <input type="text" class="form-control" id="lname" placeholder="Enter Last Name">
-            </div>
-            <div class="form-group bmd-form-group">
-                <button id="updateAccountBtn" class="btn main-btn">Update Account</button>
-            </div>
+        <!--- START CHAT DIV DISPLAY  -->
+        <div id="account-div">
+           <!-- The following is the form I made according to Figma. 
+          SuggestTODO: fixing margin between forms that might too much white space -->
+         <div class="row justify-content-center">
+          <div class="form-group">
+            <label for="firstNameInput">First Name</label>
+            <input type="text" class="form-control" id="firstNameInput">
           </div>
-          <div id = "rowSchedule" class="row justify-content-center">
-    
+          <div class="form-group">
+            <label for="lastNameInput">Last Name</label>
+            <input type="text" class="form-control" id="lastNameInput">
+          </div>  
+       </div>
+       <div class="row">
+           <div id = "profilePagetagOne">Availabilty</div>
+       </div>
+       <div id = "rowSchedule" class="row justify-content-center">
+  
             <!-- TODO: finish the weekly calandar: Bootstrap doesn't really have a calendar that looks like the mock -->
             <div class="col col-1 profile-schedule justify-content-center">
               <div id = "scheduleSelectMon" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -233,13 +235,10 @@
               </div>
               <div class = "schedule-tag">Sun</div>
             </div>
-            
-         
+          </div>
        </div>
        
-
         </div>
-
 
         <!--- START CHAT DIV DISPLAY  -->
         <div id="chats-div" hidden>
