@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css" />
+  <link href="styles/nouislider.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="styles/main.css" />
   <title>Rose Trades</title>
 </head>
@@ -68,7 +70,7 @@
             <label for="lastNameInput">Last Name</label>
             <input type="text" class="form-control" id="lastNameInput">
           </div>  
-
+        </div>
        <div class="row">
            <div id = "profilePagetagOne">Availabilty</div>
        </div>
@@ -237,7 +239,6 @@
             </div>
           </div>
        </div>
-      </div>
 
         <!--- START CHAT DIV DISPLAY  -->
         <div id="chats-div" hidden>
@@ -252,13 +253,50 @@
 
         <!--  START MY ITEMS DIV DISPLAY-->
         <div id="my_items-div" hidden>
-          MY ITEMS DIV
+
+          <!-- MY ITEMS LIST VIEW-->
+          <div id="my_items-list" class="row" hidden>
+            <button type="button" id="fab" class="btn bmd-btn-fab" data-toggle="modal" data-target="#addQuoteDialog">
+              <i class="material-icons">add</i>
+            </button>
+          </div>
+
+
+          <!-- NEW ITEM VIEW -->
+          <div id="my_items-new-item">
+            <div class="row justify-content-center">
+              <div class="form-group">
+                <label for="newItemName">Item Name</label>
+                <input type="text" class="form-control" id="newItemName">
+              </div>
+              <div class="form-group">
+                <label for="newItemDescription">Item Description</label>
+                <input type="text" class="form-control" id="lastNnewItemDescriptionameInput">
+              </div>
+              <div class="form-group">
+                <label for="newItemRange">Item Range</label>
+                <div id="newItemRange"></div>                
+              </div>
+              <div class="form-group">
+                <label for="newItemCategory">Item Category</label>
+                <select class="form-select form-control" id="newItemCategory" aria-label="Default select example">
+                  <option selected>Select item category</option>
+                  <option value="1">Books</option>
+                  <option value="2">Electronics</option>
+                  <option value="3">Food</option>
+                  <option value="4">Furniture</option>
+                  <option value="5">Other</option>
+                </select>
+              </div>
+             </div>
+          </div>
         </div>
 
         <!--  START MY APPOINTMENTS DIV DISPLAY-->
         <div id="appointments-div" hidden>
           MY APPOINTMENTS DIV
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -275,6 +313,9 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
+
+  <script src="scripts/nouislider.min.js"></script>
+
   <script src="scripts/main.js"></script>
 </body>
 

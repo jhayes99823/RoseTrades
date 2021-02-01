@@ -147,3 +147,26 @@ html {
 
     color: white;
 }
+
+#fab {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    background: #ff4d00;
+    color: white;
+    z-index: 999;
+}
+
+#fab:active {
+    transform: translateY(2px);
+    opacity: 0.8;
+}
+
+/**** Custom styles for noUiSlider ****/
+.noUi-connect {
+	background: #ff4d00;
+}
+
+#newItemRange {
+    margin-top: 75px;
+}
