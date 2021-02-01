@@ -23,13 +23,19 @@ rhit.fbUserManager = null;
 
 rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
 
-// From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
-function htmlToElement(html) {
-	var template = document.createElement('template');
-	html = html.trim();
-	template.innerHTML = html;
-	return template.content.firstChild;
-}
+/**
+ * 
+ * 
+ * MODELS
+ * 
+ */
+
+/**
+ * 
+ * 
+ * FIREBASE CONTROLLERS
+ * 
+ */
 
 rhit.FbAuthManager = class {
 	constructor() {
@@ -161,6 +167,14 @@ rhit.FbUserManager = class {
 	}
 }
 
+/**
+ * 
+ * 
+ * PAGE CONTROLLERS
+ * 
+ * 
+ */
+
 rhit.LoginPageController = class {
 	constructor() {
 		console.log('im the login page controller')
@@ -172,7 +186,6 @@ rhit.LoginPageController = class {
 }
 
 rhit.MainPageController = class {
-	
 	constructor() {
 		console.log('im the main page controller')
 
@@ -184,6 +197,77 @@ rhit.MainPageController = class {
 			window.location.href = "/profile-page.html";
 		}
 	}
+}
+
+rhit.ProfilePageController = class {
+	static NAV_TABS = {
+		ACCOUNT: "account",
+		CHATS: "chats",
+		FAVORITES: "favorites",
+		MY_ITEMS: "my_items",
+		APPOINTMENTS: "appointments"
+	}
+	
+	constructor() {
+		console.log('im the profile page controller');
+
+		this._currentTab = rhit.ProfilePageController.NAV_TABS.ACCOUNT;
+		this._previousTab = null;
+
+		document.querySelector("#logoutBtn").onclick = (event) => {
+			rhit.fbAuthManager.signOut();
+		}
+
+		document.querySelector("#homeBtn").onclick = (event) => {
+			window.location.href = "/main-list.html";
+		}
+
+		document.querySelectorAll(".side-bar-nav").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				this._setCurrentTab(item.id);
+			});
+		});
+
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+	}
+
+	updateView() {
+		/**
+		 * 
+		 * ACCOUNT DOC SELECTORS
+		 * 
+		 */
+		let name = rhit.fbUserManager.name.split(" ");
+		document.querySelector("#firstNameInput").value = name[0];
+		document.querySelector("#lastNameInput").value = name[name.length - 1];
+	}
+
+	_setCurrentTab(newTabName) {
+		if (newTabName != this._currentTab) {
+			$("#" + newTabName).addClass("selected-sidebar-item");
+			$("#" + newTabName + "-div").attr("hidden", false);
+			this._previousTab = this._currentTab;
+	
+			$("#" + this._previousTab).removeClass("selected-sidebar-item");
+			$("#" + this._previousTab + "-div").attr("hidden", true);
+			this._currentTab = newTabName;
+		}
+	}
+}
+
+/**
+ * 
+ * 
+ * UTILITY FUNCTIONS
+ * 
+ */
+
+ // From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
+function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
 }
 
 rhit.createUserObjectIfNeeded = function () {
@@ -247,10 +331,7 @@ rhit.main = function () {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 		rhit.createUserObjectIfNeeded().then((isUserNew) => {
 			console.log('isUserNew :>> ', isUserNew);
-			// if (isUserNew) {
-			// 	window.location.href = "/profile.html";
-			// 	return;
-			// }
+
 			rhit.checkForRedirects();
 			rhit.initializePage();
 		});
