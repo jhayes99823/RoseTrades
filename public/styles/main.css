@@ -110,7 +110,7 @@ html {
         margin: 40px 60px;
     }
 
-    #createAccountButton{
+    /* #createAccountButton{
         position: relative;
         background-color: #ff4d00;
         color: white;
@@ -119,7 +119,54 @@ html {
         padding: 10px 35px;
         border-radius: 5px;
         margin-top: 50px;
-    }
+    } */
 }
 
+.account-settings-form {
+    position: relative;
+    left: 15%;
+}
 
+#updateAccountBtn {
+    margin-left: 35%;
+}
+
+#scheduleSelectMon {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin: 0px;
+}
+
+#buttonGroup {
+    flex-direction: column;
+    background-color: #616366;
+}
+
+.scheduleButton{
+
+    color: white;
+}
+
+#fab {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    background: #ff4d00;
+    color: white;
+    z-index: 999;
+}
+
+#fab:active {
+    transform: translateY(2px);
+    opacity: 0.8;
+}
+
+/**** Custom styles for noUiSlider ****/
+.noUi-connect {
+	background: #ff4d00;
+}
+
+#newItemRange {
+    margin-top: 75px;
+}

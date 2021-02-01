@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css" />
+  <link href="styles/nouislider.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="styles/main.css" />
   <title>Rose Trades</title>
 </head>
@@ -55,195 +57,246 @@
       <!--/col-->
 
       <div class="col main pt-5 mt-3">
-        <!-- The following is the form I made according to Figma. 
+        <!--- START CHAT DIV DISPLAY  -->
+        <div id="account-div">
+           <!-- The following is the form I made according to Figma. 
           SuggestTODO: fixing margin between forms that might too much white space -->
-         
-         <div class="row justify-content-center">
-            <div class="form-group">
-              <label for="accountFirstNameInput" class="bmd-label-floating">What is your First Name?</label>
-              <input type="text" class="form-control" id="accountFirstNameInput">
+          <div class="row justify-content-center">
+          <div class="form-group">
+            <label for="firstNameInput">First Name</label>
+            <input type="text" class="form-control" id="firstNameInput">
+          </div>
+          <div class="form-group">
+            <label for="lastNameInput">Last Name</label>
+            <input type="text" class="form-control" id="lastNameInput">
+          </div>  
+        </div>
+       <div class="row">
+           <div id = "profilePagetagOne">Availabilty</div>
+       </div>
+       <div id = "rowSchedule" class="row justify-content-center">
+  
+            <!-- TODO: finish the weekly calandar: Bootstrap doesn't really have a calendar that looks like the mock -->
+            <div class="col col-1 profile-schedule justify-content-center">
+              <div id = "scheduleSelectMon" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Mon</div>
             </div>
-            <div class="form-group">
-              <label for="exampleInputPassword1" class="bmd-label-floating">What is your Last Name?</label>
-              <input type="text" class="form-control" id="exampleInputPassword1">
-            </div>  
-         </div>
-         <div class="row">
-             <div id = "profilePagetagOne">Availabilty</div>
-         </div>
-         <div id = "rowSchedule" class="row justify-content-center">
-    
-              <!-- TODO: finish the weekly calandar: Bootstrap doesn't really have a calendar that looks like the mock -->
-              <div class="col col-1 profile-schedule justify-content-center">
-                <div id = "scheduleSelectMon" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Mon</div>
-              </div>
-           
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectTue" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Tue</div>
-              </div>
-            
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectWed" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Wed</div>
-              </div>
-              
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectThu" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Thu</div>
-              </div>
-              
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectFri" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Fri</div>
-              </div>
-             
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectSat" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Sat</div>
-              </div>
-              
-              <div class="col col-1 profile-schedule">
-                <div id = "scheduleSelectSun" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                  <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
-                    <button type="button" class="btn scheduleButton">9</button>
-                    <button type="button" class="btn scheduleButton">8</button>
-                    <button type="button" class="btn scheduleButton">10</button>
-                    <button type="button" class="btn scheduleButton">11</button>
-                    <button type="button" class="btn scheduleButton">12</button>
-                    <button type="button" class="btn scheduleButton">13</button>
-                    <button type="button" class="btn scheduleButton">14</button>
-                    <button type="button" class="btn scheduleButton">15</button>
-                    <button type="button" class="btn scheduleButton">16</button>
-                    <button type="button" class="btn scheduleButton">17</button>
-                    <button type="button" class="btn scheduleButton">18</button>
-                    <button type="button" class="btn scheduleButton">19</button>
-                    <button type="button" class="btn scheduleButton">20</button>
-                    <button type="button" class="btn scheduleButton">21</button>
-                    <button type="button" class="btn scheduleButton">22</button>
-                  </div>
-                </div>
-                <div class = "schedule-tag">Sun</div>
-              </div>
-              
-           
-         </div>
          
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectTue" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Tue</div>
+            </div>
+          
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectWed" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Wed</div>
+            </div>
+            
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectThu" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Thu</div>
+            </div>
+            
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectFri" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Fri</div>
+            </div>
+           
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectSat" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Sat</div>
+            </div>
+            
+            <div class="col col-1 profile-schedule">
+              <div id = "scheduleSelectSun" class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div id = "buttonGroup" class="btn-group me-2" role="group" aria-label="First group">
+                  <button type="button" class="btn scheduleButton">9</button>
+                  <button type="button" class="btn scheduleButton">8</button>
+                  <button type="button" class="btn scheduleButton">10</button>
+                  <button type="button" class="btn scheduleButton">11</button>
+                  <button type="button" class="btn scheduleButton">12</button>
+                  <button type="button" class="btn scheduleButton">13</button>
+                  <button type="button" class="btn scheduleButton">14</button>
+                  <button type="button" class="btn scheduleButton">15</button>
+                  <button type="button" class="btn scheduleButton">16</button>
+                  <button type="button" class="btn scheduleButton">17</button>
+                  <button type="button" class="btn scheduleButton">18</button>
+                  <button type="button" class="btn scheduleButton">19</button>
+                  <button type="button" class="btn scheduleButton">20</button>
+                  <button type="button" class="btn scheduleButton">21</button>
+                  <button type="button" class="btn scheduleButton">22</button>
+                </div>
+              </div>
+              <div class = "schedule-tag">Sun</div>
+            </div>
+          </div>
+       </div>
+
+        <!--- START CHAT DIV DISPLAY  -->
+        <div id="chats-div" hidden>
+          CHAT DIV
+        </div>
 
 
-         </div>
-        
+        <!--  START FAVORITES DIV DISPLAY-->
+        <div id="favorites-div" hidden>
+          FAVORITES DIV
+        </div>
+
+        <!--  START MY ITEMS DIV DISPLAY-->
+        <div id="my_items-div" hidden>
+
+          <!-- MY ITEMS LIST VIEW-->
+          <div id="my_items-list" class="row" hidden>
+            <button type="button" id="fab" class="btn bmd-btn-fab" data-toggle="modal" data-target="#addQuoteDialog">
+              <i class="material-icons">add</i>
+            </button>
+          </div>
 
 
+          <!-- NEW ITEM VIEW -->
+          <div id="my_items-new-item">
+            <div class="row justify-content-center">
+              <div class="form-group">
+                <label for="newItemName">Item Name</label>
+                <input type="text" class="form-control" id="newItemName">
+              </div>
+              <div class="form-group">
+                <label for="newItemDescription">Item Description</label>
+                <input type="text" class="form-control" id="lastNnewItemDescriptionameInput">
+              </div>
+              <div class="form-group">
+                <label for="newItemRange">Item Range</label>
+                <div id="newItemRange"></div>                
+              </div>
+              <div class="form-group">
+                <label for="newItemCategory">Item Category</label>
+                <select class="form-select form-control" id="newItemCategory" aria-label="Default select example">
+                  <option selected>Select item category</option>
+                  <option value="1">Books</option>
+                  <option value="2">Electronics</option>
+                  <option value="3">Food</option>
+                  <option value="4">Furniture</option>
+                  <option value="5">Other</option>
+                </select>
+              </div>
+             </div>
+          </div>
+        </div>
+
+        <!--  START MY APPOINTMENTS DIV DISPLAY-->
+        <div id="appointments-div" hidden>
+          MY APPOINTMENTS DIV
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -260,6 +313,9 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
+
+  <script src="scripts/nouislider.min.js"></script>
+
   <script src="scripts/main.js"></script>
 </body>
 
