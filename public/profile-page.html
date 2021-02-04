@@ -255,23 +255,23 @@
         <div id="my_items-div" hidden>
 
           <!-- MY ITEMS LIST VIEW-->
-          <div id="my_items-list" class="row" hidden>
-            <button type="button" id="fab" class="btn bmd-btn-fab" data-toggle="modal" data-target="#addQuoteDialog">
+          <div id="my_items-list" class="row">
+            <button type="button" id="switchNewItem" class="btn bmd-btn-fab" data-toggle="modal" data-target="#addQuoteDialog">
               <i class="material-icons">add</i>
             </button>
           </div>
 
 
           <!-- NEW ITEM VIEW -->
-          <div id="my_items-new-item">
-            <div class="row justify-content-center">
+          <div id="my_items-new-item" hidden>
+            <div class="row container justify-content-center">
               <div class="form-group">
                 <label for="newItemName">Item Name</label>
                 <input type="text" class="form-control" id="newItemName">
               </div>
               <div class="form-group">
                 <label for="newItemDescription">Item Description</label>
-                <input type="text" class="form-control" id="lastNnewItemDescriptionameInput">
+                <input type="text" class="form-control" id="newItemDescription">
               </div>
               <div class="form-group">
                 <label for="newItemRange">Item Range</label>
@@ -287,6 +287,11 @@
                   <option value="4">Furniture</option>
                   <option value="5">Other</option>
                 </select>
+              </div>
+              <div class="form-group">
+                <button id="addItemBtn" type="button" class="btn btn-block main-btn">
+                  Add Item
+                </button>
               </div>
              </div>
           </div>
@@ -316,6 +321,7 @@
 
   <script src="scripts/nouislider.min.js"></script>
 
+  <script src="scripts/main2.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 
