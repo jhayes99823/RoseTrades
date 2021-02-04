@@ -31,6 +31,7 @@ rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_SELLER = "seller";
 rhit.FB_KEY_PRICE = "price";
 
+rhit.FB_KEY_SCHEDULE = "schedule";
 rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
 rhit.fbProfileItemManger = null;
