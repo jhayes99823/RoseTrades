@@ -17,7 +17,7 @@ var rhit = rhit || {};
 rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_USERNAME = "username";
 rhit.FB_KEY_NAME = "name";
-
+rhit.FB_KEY_SCHEDULE = "schedule";
 rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
 
