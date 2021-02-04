@@ -36,8 +36,6 @@
 // rhit.fbUserManager = null;
 // rhit.fbProfileItemManger = null;
 
-// rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
-
 // /**
 //  * 
 //  * 
@@ -527,6 +525,8 @@
 // rhit.main();
 
 var rhit = rhit || {};
+
+rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
 
 /* Main */
 rhit.main = function () {
