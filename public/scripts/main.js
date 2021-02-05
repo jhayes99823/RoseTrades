@@ -528,13 +528,13 @@ var rhit = rhit || {};
 
 rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
 
+
+
 /* Main */
 rhit.main = function () {
 	console.log("Ready");
 
-	$(function() {
-		$("#navigation").load("navbar.html");
-	});
+	$("#navigation").load("navbar.html");
 };
 
 rhit.main();

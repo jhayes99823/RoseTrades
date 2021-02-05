@@ -31,3 +31,13 @@
       </ul>
     </div>
   </nav>
+
+<script>
+  var pathname = window.location.pathname,
+pages = ['main-list', 'account', 'chats','favorites', 'my-item', 'appointments'];
+
+$('.nav-item').each(function(i) {
+ if (pathname.includes(pages[i])) $(this).addClass('active');
+ else if (this.className.includes('active')) $(this).removeClass('active');
+});
+</script>
