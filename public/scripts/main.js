@@ -9,6 +9,8 @@
 /** namespace. */
 var rhit = rhit || {};
 
+rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
+
 /**
  * 
  * USER COLLECTION VARIABLES
@@ -17,11 +19,24 @@ var rhit = rhit || {};
 rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_USERNAME = "username";
 rhit.FB_KEY_NAME = "name";
+
+/**
+ * 
+ * 
+ * ITEM COLLECTION VARIABLES
+ * 
+ */
+rhit.FB_COLLECTION_ITEMS = "items";
+rhit.FB_KEY_CATEGORY = "category";
+rhit.FB_KEY_ITEM_NAME = "name";
+rhit.FB_KEY_DESCRIPTION = "description";
+rhit.FB_KEY_SELLER = "seller";
+rhit.FB_KEY_PRICE = "price";
+
 rhit.FB_KEY_SCHEDULE = "schedule";
 rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
-
-rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
+rhit.fbProfileItemManger = null;
 
 /**
  * 
@@ -29,6 +44,16 @@ rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
  * MODELS
  * 
  */
+
+ rhit.Item = class {
+	constructor(id, name, description, category, priceRange) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.category = category;
+		this.priceRange = priceRange;
+	}
+ }
 
 /**
  * 
@@ -167,6 +192,33 @@ rhit.FbUserManager = class {
 	}
 }
 
+rhit.FbProfileItemManger = class {
+	constructor() {
+		this.documents = [];
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
+    	this._unsubscribe = null;
+	}
+
+	add(name, description, priceRange, category) {
+		this._ref.add({
+			[rhit.FB_KEY_ITEM_NAME]: name,
+			[rhit.FB_KEY_CATEGORY]: category,
+			[rhit.FB_KEY_DESCRIPTION]: description,
+			[rhit.FB_KEY_PRICE]: priceRange,
+			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid
+		}).then(function (docRef) {
+			console.log("Document written in ID: ", docRef.id);
+		  })
+		  .catch(function (error) {
+			console.error("Error adding document: ", error);
+		  });
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+}
+
 /**
  * 
  * 
@@ -228,6 +280,56 @@ rhit.ProfilePageController = class {
 			});
 		});
 
+				let slider = document.getElementById('newItemRange');
+
+		noUiSlider.create(slider, {
+			start: [0, 100],
+			connect: true,
+			step: 5,
+			tooltips: true,
+			range: {
+				'min': 0,
+				'max': 500
+			},
+			format: {
+				from: function(value) {
+						return parseInt(value);
+					},
+				to: function(value) {
+						return parseInt(value);
+					}
+				}
+		});
+
+		slider.noUiSlider.on('change', function () { 
+			console.log(slider.noUiSlider.get());
+		});
+
+		mergeTooltips(slider, 15, ' - ');
+
+		const myItemsListDiv = $("#my_items-list");
+		const newItemsDiv = $("#my_items-new-item");
+
+		document.querySelector("#addItemBtn").onclick = (event) => {
+			const name = document.querySelector("#newItemName").value;
+			const description = document.querySelector("#newItemDescription").value;
+			const category = document.querySelector("#newItemCategory").value;
+			const priceRange = {
+				low: slider.noUiSlider.get()[0],
+				high: slider.noUiSlider.get()[1]
+			}
+
+			rhit.fbItemManger.add(name, description, category, priceRange);
+
+			myItemsListDiv.attr("hidden", false);
+			newItemsDiv.attr("hidden", true);
+		}
+
+		document.querySelector("#switchNewItem").onclick = (event) => {
+			myItemsListDiv.attr("hidden", true);
+			newItemsDiv.attr("hidden", false);
+		}
+
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 	}
 
@@ -241,24 +343,7 @@ rhit.ProfilePageController = class {
 		document.querySelector("#firstNameInput").value = name[0];
 		document.querySelector("#lastNameInput").value = name[name.length - 1];
 	
-		let slider = document.getElementById('newItemRange');
-
-		noUiSlider.create(slider, {
-			start: [0, 100],
-			connect: true,
-			step: 5,
-			tooltips: true,
-			range: {
-				'min': 0,
-				'max': 500
-			}
-		});
-
-		slider.noUiSlider.on('change', function () { 
-			console.log(slider.noUiSlider.get());
-		});
-
-		mergeTooltips(slider, 15, ' - ');
+		
 	}
 
 	_setCurrentTab(newTabName) {
@@ -406,7 +491,6 @@ rhit.initializePage = function () {
 	if (document.querySelector("#mainList")) {
 		console.log("You are on the list page.");
 		const uid = urlParams.get("uid");
-		// rhit.fbMovieQuotesManager = new rhit.FbMovieQuotesManager(uid);
 		new rhit.MainPageController(uid);
 	}
 
@@ -415,16 +499,25 @@ rhit.initializePage = function () {
 		new rhit.LoginPageController();
 	}
 
-	if (document.querySelector("#profilePage")) {
-		const uid = urlParams.get("uid");
-		console.log("You are on the profile page.");
-		new rhit.ProfilePageController(uid);
+	if (document.querySelector("#accountPage")) {
+		console.log('You are on the account page');
+		new rhit.AccountPageController();
 	}
+
+	// if (document.querySelector("#profilePage")) {
+	// 	const uid = urlParams.get("uid");
+	// 	console.log("You are on the profile page.");
+	// 	rhit.fbProfileItemManger = new rhit.FbProfileItemManger();
+	// 	new rhit.ProfilePageController(uid);
+	// }
 };
 
 /* Main */
 rhit.main = function () {
 	console.log("Ready");
+
+	$("#navigation").load("navbar.html");
+
 	rhit.fbUserManager = new rhit.FbUserManager();
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbAuthManager.beginListening(() => {

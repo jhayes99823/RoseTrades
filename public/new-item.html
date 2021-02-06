@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>Rose Trades</title>
+</head>
+
+<body>
+
+  <div id="navigation"></div>
+  <div id="newItemPage" class="container page-container">
+    <div id="my_items-new-item">
+      <h2>Add New Item</h2>
+      <div class="row container justify-content-center">
+        <div class="form-group">
+          <label for="newItemName">Item Name</label>
+          <input type="text" class="form-control" id="newItemName">
+        </div>
+        <div class="form-group">
+          <label for="newItemDescription">Item Description</label>
+          <input type="text" class="form-control" id="newItemDescription">
+        </div>
+        <div class="form-group">
+          <label for="newItemRange">Item Range</label>
+          <div id="newItemRange"></div>                
+        </div>
+        <div class="form-group">
+          <label for="newItemCategory">Item Category</label>
+          <select class="form-select form-control" id="newItemCategory" aria-label="Default select example">
+            <option selected>Select item category</option>
+            <option value="1">Books</option>
+            <option value="2">Electronics</option>
+            <option value="3">Food</option>
+            <option value="4">Furniture</option>
+            <option value="5">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button id="addItemBtn" type="button" class="btn btn-block main-btn">
+            Add Item
+          </button>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="scripts/nouislider.min.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>
