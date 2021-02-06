@@ -12,10 +12,13 @@ html {
 }
 
 #profilePagetagOne{
-    margin-left: 130px;
+    margin-left: 30em;
     margin-bottom: 10px;;
 }
 
+#form2{
+    margin: 0 0 0 0;
+}
 
 #sidebar .nav-item .nav-link {
     background-color: #ff4d00;
