@@ -259,7 +259,7 @@ rhit.FbAllItemManager = class {
 	}
 
 	beginListening(changeListener) {
-		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
+		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).onSnapshot((querySnapshot) => {
 		  this._documentSnapshots = querySnapshot.docs;
 		  changeListener();
 		});
