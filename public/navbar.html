@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
+<nav id="commonNavBar" class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
     <div class="flex-row d-flex">
       <button type="button" class="navbar-toggler mr-2" data-toggle="offcanvas">
         <span class="navbar-toggler-icon"></span>
@@ -31,13 +31,3 @@
       </ul>
     </div>
   </nav>
-
-<script>
-  var pathname = window.location.pathname,
-pages = ['main-list', 'account', 'chats','favorites', 'my-item', 'appointments'];
-
-$('.nav-item').each(function(i) {
- if (pathname.includes(pages[i])) $(this).addClass('active');
- else if (this.className.includes('active')) $(this).removeClass('active');
-});
-</script>

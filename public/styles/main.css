@@ -151,7 +151,7 @@ html {
     color: white;
 }
 
-#fab {
+#addItemBtn {
     position: fixed;
     right: 10px;
     bottom: 10px;
@@ -160,7 +160,7 @@ html {
     z-index: 999;
 }
 
-#fab:active {
+#addItemBtn:active {
     transform: translateY(2px);
     opacity: 0.8;
 }

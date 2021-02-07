@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css" />
+  <link href="styles/nouislider.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css" />
   <title>Rose Trades</title>
 </head>
 
 <body>
-  <div id="navigation"></div>
-  <!-- <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
+  <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
     <div class="flex-row d-flex">
       <button type="button" class="navbar-toggler mr-2" data-toggle="offcanvas">
         <span class="navbar-toggler-icon"></span>
@@ -24,20 +24,27 @@
     </button>
     <div class="navbar-collapse collapse" id="collapsingNavbar">
       <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">Home</span></a>
-        </li>
         <li class="nav-item">
-          <a class="nav-link" id="profileBtn">Profile</a>
+          <a class="nav-link" href="main-list.html" id="home">Home<span class="sr-only">Home</span></a>
+        </li>
+       
+        <li class="nav-item"><a id="account" class="nav-link side-bar-nav" href="account-page.html">Account</a></li>
+        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chats.html">Chats</a></li>
+        <li class="nav-item">
+          <a class="nav-link side-bar-nav" id="favorites" href="favorites.html">Favorites</a>
+        </li>
+        <li class="nav-item"><a id="my_items" class="nav-link side-bar-nav" href="my-item.html">My Items</a></li>
+        <li class="nav-item">
+          <a class="nav-link side-bar-nav" id="appointments" href="appointments.html">Appointments</a>
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" id="logoutBtn" href="">Logout</a>
+          <a class="nav-link" id="logout" href="">Logout</a>
         </li>
       </ul>
     </div>
-  </nav> -->
+  </nav>
   <div class="container-fluid h-100" id="mainList">
     <div class="row row-offcanvas row-offcanvas-left h-100">
       <div class="col-md-3 col-lg-2 sidebar-offcanvas bg-light pl-0" id="sidebar" role="navigation">

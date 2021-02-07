@@ -36,7 +36,7 @@ rhit.FB_KEY_PRICE = "price";
 rhit.FB_KEY_SCHEDULE = "schedule";
 rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
-rhit.fbProfileItemManger = null;
+rhit.fbItemManager = null;
 
 /**
  * 
@@ -133,6 +133,7 @@ rhit.FbUserManager = class {
 		console.log("Listening for uid", uid);
 		const userRef = this._collectoinRef.doc(uid);
 		this._unsubscribe = userRef.onSnapshot((doc) => {
+			console.log('fb user manager     ', doc);
 			if (doc.exists) {
 				this._document = doc;
 				console.log('doc.data() :', doc.data());
@@ -192,7 +193,9 @@ rhit.FbUserManager = class {
 	}
 }
 
-rhit.FbProfileItemManger = class {
+rhit.FbItemManager = class {
+	static CATEGORIES = ["BOOKS", "ELECTRONICS", "FOOD", "FURNITURE", "OTHER"];
+
 	constructor() {
 		this.documents = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
@@ -202,7 +205,7 @@ rhit.FbProfileItemManger = class {
 	add(name, description, priceRange, category) {
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
-			[rhit.FB_KEY_CATEGORY]: category,
+			[rhit.FB_KEY_CATEGORY]: rhit.FbItemManager.CATEGORIES[category - 1],
 			[rhit.FB_KEY_DESCRIPTION]: description,
 			[rhit.FB_KEY_PRICE]: priceRange,
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid
@@ -241,46 +244,72 @@ rhit.MainPageController = class {
 	constructor() {
 		console.log('im the main page controller')
 
-		document.querySelector("#logoutBtn").onclick = (event) => {
+		document.querySelector("#logout").onclick = (event) => {
 			rhit.fbAuthManager.signOut();
-		}
-
-		document.querySelector("#profileBtn").onclick = (event) => {
-			window.location.href = "/profile-page.html";
 		}
 	}
 }
 
-rhit.ProfilePageController = class {
-	static NAV_TABS = {
-		ACCOUNT: "account",
-		CHATS: "chats",
-		FAVORITES: "favorites",
-		MY_ITEMS: "my_items",
-		APPOINTMENTS: "appointments"
-	}
-	
+rhit.AccountPageController = class {
 	constructor() {
-		console.log('im the profile page controller');
+		console.log('im the account page controller');
 
-		this._currentTab = rhit.ProfilePageController.NAV_TABS.ACCOUNT;
-		this._previousTab = null;
-
-		document.querySelector("#logoutBtn").onclick = (event) => {
+		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
-		}
-
-		document.querySelector("#homeBtn").onclick = (event) => {
-			window.location.href = "/main-list.html";
-		}
-
-		document.querySelectorAll(".side-bar-nav").forEach((item) => {
-			item.addEventListener("click", (event) => {
-				this._setCurrentTab(item.id);
-			});
 		});
 
-				let slider = document.getElementById('newItemRange');
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+	}
+
+	updateView() {
+		let name = rhit.fbUserManager.name.split(" ");
+
+		const savedFirstName = name[0];
+		const savedLastName = name[name.length - 1];
+
+		const firstNameInput = document.querySelector("#firstNameInput");
+		const lastNameInput = document.querySelector("#lastNameInput");
+
+		firstNameInput.value = savedFirstName;
+		lastNameInput.value = savedLastName;
+
+		firstNameInput.addEventListener("input", (event) => {
+			if ((firstNameInput.value != savedFirstName) || (lastNameInput.value != savedLastName)) {
+				$("#updateBtn").attr("disabled", false);
+			} else {
+				$("#updateBtn").attr("disabled", true);
+			}
+		});
+
+		lastNameInput.addEventListener("input", (event) => {
+			if ((lastNameInput.value != savedLastName) || (firstNameInput.value != savedFirstName)) {
+				$("#updateBtn").attr("disabled", false);
+			} else {
+				$("#updateBtn").attr("disabled", true);
+			}
+		});
+	}
+}
+
+rhit.MyItemPageController = class {
+	constructor() {
+		console.log('im the add item page controller');
+
+		document.querySelector("#addItemBtn").addEventListener("click", (event) => {
+			window.location.href = "/new-item.html";
+		});
+	}
+}
+
+rhit.AddItemPageController = class {
+	constructor() {
+		console.log('im the add item page controller');
+
+		document.querySelector("#logout").addEventListener("click", (event) => {
+			rhit.fbAuthManager.signOut();
+		});
+
+		let slider = document.getElementById('newItemRange');
 
 		noUiSlider.create(slider, {
 			start: [0, 100],
@@ -307,55 +336,19 @@ rhit.ProfilePageController = class {
 
 		mergeTooltips(slider, 15, ' - ');
 
-		const myItemsListDiv = $("#my_items-list");
-		const newItemsDiv = $("#my_items-new-item");
-
-		document.querySelector("#addItemBtn").onclick = (event) => {
+		document.querySelector("#addItemBtn").addEventListener("click", (event) => {
 			const name = document.querySelector("#newItemName").value;
 			const description = document.querySelector("#newItemDescription").value;
 			const category = document.querySelector("#newItemCategory").value;
 			const priceRange = {
 				low: slider.noUiSlider.get()[0],
 				high: slider.noUiSlider.get()[1]
-			}
+			};
 
-			rhit.fbItemManger.add(name, description, category, priceRange);
+			console.log(name, description, category, priceRange);
 
-			myItemsListDiv.attr("hidden", false);
-			newItemsDiv.attr("hidden", true);
-		}
-
-		document.querySelector("#switchNewItem").onclick = (event) => {
-			myItemsListDiv.attr("hidden", true);
-			newItemsDiv.attr("hidden", false);
-		}
-
-		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
-	}
-
-	updateView() {
-		/**
-		 * 
-		 * ACCOUNT DOC SELECTORS
-		 * 
-		 */
-		let name = rhit.fbUserManager.name.split(" ");
-		document.querySelector("#firstNameInput").value = name[0];
-		document.querySelector("#lastNameInput").value = name[name.length - 1];
-	
-		
-	}
-
-	_setCurrentTab(newTabName) {
-		if (newTabName != this._currentTab) {
-			$("#" + newTabName).addClass("selected-sidebar-item");
-			$("#" + newTabName + "-div").attr("hidden", false);
-			this._previousTab = this._currentTab;
-	
-			$("#" + this._previousTab).removeClass("selected-sidebar-item");
-			$("#" + this._previousTab + "-div").attr("hidden", true);
-			this._currentTab = newTabName;
-		}
+			rhit.fbItemManager.add(name, description, priceRange, category);
+		});
 	}
 }
 
@@ -504,6 +497,18 @@ rhit.initializePage = function () {
 		new rhit.AccountPageController();
 	}
 
+	if (document.querySelector("#myItemsPage")) {
+		console.log('You are on the my items page');
+		rhit.fbItemManager = new rhit.FbItemManager();
+		new rhit.MyItemPageController();
+	}
+
+	if (document.querySelector("#newItemPage")) {
+		console.log('You are on the new item page');
+		rhit.fbItemManager = new rhit.FbItemManager();
+		new rhit.AddItemPageController();
+	}
+
 	// if (document.querySelector("#profilePage")) {
 	// 	const uid = urlParams.get("uid");
 	// 	console.log("You are on the profile page.");
@@ -516,15 +521,12 @@ rhit.initializePage = function () {
 rhit.main = function () {
 	console.log("Ready");
 
-	$("#navigation").load("navbar.html");
-
-	rhit.fbUserManager = new rhit.FbUserManager();
 	rhit.fbAuthManager = new rhit.FbAuthManager();
+	rhit.fbUserManager = new rhit.FbUserManager();
 	rhit.fbAuthManager.beginListening(() => {
 		console.log("isSignedIn = ", rhit.fbAuthManager.isSignedIn);
 		rhit.createUserObjectIfNeeded().then((isUserNew) => {
 			console.log('isUserNew :>> ', isUserNew);
-
 			rhit.checkForRedirects();
 			rhit.initializePage();
 		});
