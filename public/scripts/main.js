@@ -19,6 +19,7 @@ rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
 rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_USERNAME = "username";
 rhit.FB_KEY_NAME = "name";
+rhit.FB_KEY_FAVORITE_ITEMS = "favorites";
 
 /**
  * 
@@ -169,6 +170,7 @@ rhit.FbUserManager = class {
 				console.log("Creating the user!");
 				return userRef.set({
 					[rhit.FB_KEY_NAME]: name,
+					[rhit.FB_KEY_FAVORITE_ITEMS]: []
 				}).then(() => {
 					return true;
 				});
@@ -189,8 +191,25 @@ rhit.FbUserManager = class {
 			});
 	}
 
+	updateFavorites(favorites) {
+		const userRef = this._collectoinRef.doc(rhit.fbAuthManager.uid);
+		return userRef.update({
+				[rhit.FB_KEY_FAVORITE_ITEMS]: favorites
+			})
+			.then(() => {
+				console.log("Document successfully updated with name!");
+			})
+			.catch(function (error) {
+				console.error("Error updating document: ", error);
+			});
+	}
+
 	get name() {
 		return this._document.get(rhit.FB_KEY_NAME);
+	}
+
+	get favorites() {
+		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
 }
 
@@ -328,7 +347,6 @@ rhit.MainPageController = class {
 		
 			//   window.location.href = `/moviequote.html?id=${mq.id}`;
 			// };
-		
 			newList.appendChild(newCard);
 		}
 
@@ -339,12 +357,36 @@ rhit.MainPageController = class {
 	
 		// put in new quoteListContainer
 		oldList.parentElement.appendChild(newList);
+
+		const allCards = document.querySelectorAll(".card-with-non-favorite");
+		
+		for (const card of allCards) {
+			const moreDetailBtn = card.querySelector('.more-details');
+
+			moreDetailBtn.addEventListener("click", (event) => {
+				window.location.href = `item-detail.html?id=${card.id}`;
+			});
+
+			// const favoriteBtn = card.querySelector(".favorite-btn");
+
+			// favoriteBtn.addEventListener("click", (event) => {
+			// 	const userFavs = rhit.fbUserManager.favorites;
+
+			// 	console.log('userFavs', userFavs);
+
+			// 	// userFavs.append(card.id);
+
+			// 	// rhit.fbUserManager.updateFavorites(userFavs);
+
+			// 	// favoriteBtn.innerHTML = favorite;
+			// });
+		}
 	}
 
 	_createCard(item) {
 		return htmlToElement(`
-		<div class="col-md-4">
-              <div class="card mb-4 box-shadow">
+		<div id="${item.id}" class="col-md-4 card-with-non-favorite">
+              <div class="card mb-4 box-shadow" data-item-id="${item.id}">
                 <img class="card-img-top"
                   data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
                   alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block"
@@ -354,12 +396,12 @@ rhit.MainPageController = class {
                   <p class="card-text">${item.name} - $${item.priceRange.low} - ${item.priceRange.high}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-sm">
+                      <button type="button" class="btn btn-sm more-details">
                         More Details
                       </button>
 					</div>
-					<span class="material-icons"> favorite_border </span>
-                  </div>
+
+					</div>
                 </div>
               </div>
 			</div>
