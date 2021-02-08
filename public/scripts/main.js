@@ -126,6 +126,7 @@ rhit.FbAuthManager = class {
 	}
 }
 
+
 rhit.FbUserManager = class {
 	constructor() {
 		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS);
@@ -508,7 +509,7 @@ rhit.AccountPageController = class {
 
 rhit.MyItemPageController = class {
 	constructor() {
-		console.log('im the add item page controller');
+		console.log('I am at the MyItemPageController');
 
 		document.querySelector("#addItemBtn").addEventListener("click", (event) => {
 			window.location.href = "/new-item.html";
@@ -522,14 +523,13 @@ rhit.MyItemPageController = class {
 
 		for (let i = 0; i < rhit.fbUserItemManager.length; i++) {
 			const item = rhit.fbUserItemManager.getItemAtIndex(i);
+			// added them so that more details can jump to item-detail.html
 			const newCard = this._createCard(item);
+			newCard.addEventListener("click", (event) => {
+			console.log(`You clicked on ${item.id}`);
+			window.location.href = `item-detail.html?id=${item.id}`;
+			});
 		
-			// newCard.onclick = (event) => {
-			//   console.log(`You clicked on ${mq.id}`);
-			//   // rhit.storage.setMovieQuoteId(mq.id);
-		
-			//   window.location.href = `/moviequote.html?id=${mq.id}`;
-			// };
 		
 			newList.appendChild(newCard);
 		}
@@ -541,6 +541,9 @@ rhit.MyItemPageController = class {
 	
 		// put in new quoteListContainer
 		oldList.parentElement.appendChild(newList);
+
+		
+		
 	}
 
 	_createCard(item) {
@@ -556,7 +559,7 @@ rhit.MyItemPageController = class {
                   <p class="card-text">${item.name} - $${item.priceRange.low} - ${item.priceRange.high}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-sm">
+                      <button type="button" class="more-details btn btn-sm">
                         More Details
                       </button>
                     </div>
