@@ -642,6 +642,10 @@ rhit.ItemDetailPage = class {
 
 	updateView() {
 
+		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
+		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
+		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
+
 		let slider = document.getElementById('choseItemRange');
 
 		noUiSlider.create(slider, {
