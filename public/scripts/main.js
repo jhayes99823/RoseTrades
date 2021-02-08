@@ -126,6 +126,7 @@ rhit.FbAuthManager = class {
 	}
 }
 
+
 rhit.FbUserManager = class {
 	constructor() {
 		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS);
@@ -344,6 +345,27 @@ rhit.FbSingleItemManager = class {
 		this._unsubscribe();
 	}
 
+	update(name, description, priceRange, category) {
+		this._ref.update({
+			[rhit.FB_KEY_CATEGORY] : category,
+			[rhit.FB_KEY_ITEM_NAME] : name,
+			[rhit.FB_KEY_DESCRIPTION] : description,
+			[rhit.FB_KEY_PRICE] : priceRange,
+			
+		}).then(() => {
+			console.log("item has been updated");
+		});
+	}
+
+	delete() {
+		console.log("item successfully deleted!");
+		return this._ref.delete();
+	}
+
+	get seller(){
+		return rhit.fbAuthManager.uid;
+	}
+
 	get name() {
 		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
 	}
@@ -508,7 +530,7 @@ rhit.AccountPageController = class {
 
 rhit.MyItemPageController = class {
 	constructor() {
-		console.log('im the add item page controller');
+		console.log('I am at the MyItemPageController');
 
 		document.querySelector("#addItemBtn").addEventListener("click", (event) => {
 			window.location.href = "/new-item.html";
@@ -523,13 +545,12 @@ rhit.MyItemPageController = class {
 		for (let i = 0; i < rhit.fbUserItemManager.length; i++) {
 			const item = rhit.fbUserItemManager.getItemAtIndex(i);
 			const newCard = this._createCard(item);
+			//// added them so that more details can jump to item-detail.html
+			// newCard.addEventListener("click", (event) => {
+			// console.log(`You clicked on ${item.id}`);
+			// window.location.href = `item-detail.html?id=${item.id}`;
+			// });
 		
-			// newCard.onclick = (event) => {
-			//   console.log(`You clicked on ${mq.id}`);
-			//   // rhit.storage.setMovieQuoteId(mq.id);
-		
-			//   window.location.href = `/moviequote.html?id=${mq.id}`;
-			// };
 		
 			newList.appendChild(newCard);
 		}
@@ -541,11 +562,23 @@ rhit.MyItemPageController = class {
 	
 		// put in new quoteListContainer
 		oldList.parentElement.appendChild(newList);
+
+		const allCards = document.querySelectorAll(".detail-card");
+        console.log(allCards);
+        for (const card of allCards) {
+			console.log("item id;  ", card.id);
+            const moreDetailBtn = card.querySelector('.more-details');
+            moreDetailBtn.addEventListener("click", (event) => {
+				window.location.href = `item-detail.html?id=${card.id}`;
+            });
+
+    	}
+		
 	}
 
 	_createCard(item) {
 		return htmlToElement(`
-		<div class="col-md-4">
+		<div id = "${item.id}" class="col-md-4 detail-card">
               <div class="card mb-4 box-shadow">
                 <img class="card-img-top"
                   data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
@@ -556,7 +589,7 @@ rhit.MyItemPageController = class {
                   <p class="card-text">${item.name} - $${item.priceRange.low} - ${item.priceRange.high}</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-sm">
+                      <button type="button" class="more-details btn btn-sm">
                         More Details
                       </button>
                     </div>
@@ -611,7 +644,7 @@ rhit.AddItemPageController = class {
 				low: slider.noUiSlider.get()[0],
 				high: slider.noUiSlider.get()[1]
 			};
-
+			
 			console.log(name, description, category, priceRange);
 
 			rhit.fbUserItemManager.add(name, description, priceRange, category);
@@ -622,11 +655,87 @@ rhit.AddItemPageController = class {
 rhit.ItemDetailPage = class {
 	constructor(id) {
 		console.log('im the item detail page controller');
+		//Reference code from MYMOVIEQUOTE
+		// if(rhit.fbSingleQuoteManager.author == rhit.fbAuthManager.uid){
+		// 	document.querySelector("#menuEdit").style.display = "flex";
+		// 	document.querySelector("#menuDelete").style.display = "flex";
+		// }
+		let editMode = false;
+		if(rhit.fbSingleItemManager.seller == rhit.fbAuthManager.uid){
+			document.querySelector("#editItemBtn").style.display = "flex";
+			document.querySelector("#editItemBtn").onclick = (event) => {
+				editMode = !editMode;
+				console.log("editMode ON");
+				//console.log(document.querySelector("#detailButtomButton").innerHTML );
+				document.querySelector("#choseItemName").disabled = false;
+				document.querySelector("#choseItemDescription").disabled = false;
+				document.querySelector("#choseItemRange").disabled = false;
+				document.querySelector("#choseItemCategory").disabled = false;
+				document.querySelector("#updateItemBtn").style.visibility = 'visible';
+				document.querySelector("#editItemBtn").style.display = "none";
+			};
+		
+			if(document.querySelector("#updateItemBtn")){
+				const name = document.querySelector("#choseItemName").value;
+				const description = document.querySelector("#choseItemDescription").value;
+				const priceRange = document.querySelector("#choseItemRange").value;
+				const category = document.querySelector("#choseItemCategory").value;
+				//rhit.fbSingleItemManager.update(name, description, priceRange, category );
+			}
+		
+			
+		};
+
+		// document.querySelector("#submitEditQuote").onclick = (event) => {
+		// 	const quote = document.querySelector("#inputQuote").value;
+		// 	const movie = document.querySelector("#inputMovie").value;
+		// 	console.log(quote, movie);
+		// 	rhit.fbSingleQuoteManager.update(quote, movie);
+		// };
 
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));
+			
+		
 	}
 
+
 	updateView() {
+
+		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
+		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
+		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
+
+		let slider = document.getElementById('choseItemRange');
+
+		noUiSlider.create(slider, {
+			start: [rhit.fbSingleItemManager.priceRange.low, 
+				rhit.fbSingleItemManager.priceRange.high],
+			connect: true,
+			step: 5,
+			tooltips: true,
+			range: {
+				'min': 0,
+				'max': 500
+			},
+			format: {
+				from: function(value) {
+						return parseInt(value);
+					},
+				to: function(value) {
+						return parseInt(value);
+					}
+				}
+		});
+
+		slider.noUiSlider.on('change', function () { 
+			console.log(slider.noUiSlider.get());
+		});
+
+		mergeTooltips(slider, 15, ' - ');
+		slider.style.marginTop = "70px";
+		
+		
+
 		console.log("name ", rhit.fbSingleItemManager.name);
 		console.log("description", rhit.fbSingleItemManager.description);
 		console.log("category", rhit.fbSingleItemManager.category);
