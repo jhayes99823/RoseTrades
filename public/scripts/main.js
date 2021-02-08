@@ -39,6 +39,7 @@ rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
 rhit.fbUserItemManager = null;
 rhit.fbAllItemManager = null
+rhit.fbSingleItemManager = null;
 
 /**
  * 
@@ -305,6 +306,61 @@ rhit.FbAllItemManager = class {
 	  }
 }
 
+rhit.FbSingleItemManager = class {
+	constructor(id) {
+		this._documentSnapshot = {};
+		this._unsubscribe = null;
+		this._ref = firebase
+		  .firestore()
+		  .collection(rhit.FB_COLLECTION_ITEMS)
+		  .doc(id);
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((doc) => {
+		if (doc.exists) {
+			this._documentSnapshot = doc;
+			changeListener();
+		} else {
+			console.log("no such document");
+		}
+	});
+	
+	this._ref
+		.get()
+		.then((doc) => {
+		if (doc.exists) {
+			this._documentSnapshot = doc;
+		} else {
+			window.location.href = "/main-list.html";
+		}
+		})
+		.catch((error) => {
+		console.log("Error getting document: ", error);
+		});
+	}
+	
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get name() {
+		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
+	}
+
+	get description() {
+		return this._documentSnapshot.get(rhit.FB_KEY_DESCRIPTION);
+	}
+
+	get category() {
+		return this._documentSnapshot.get(rhit.FB_KEY_CATEGORY);
+	}
+
+	get priceRange() {
+		return this._documentSnapshot.get(rhit.FB_KEY_PRICE);
+	}
+}
+
 /**
  * 
  * 
@@ -563,6 +619,22 @@ rhit.AddItemPageController = class {
 	}
 }
 
+rhit.ItemDetailPage = class {
+	constructor(id) {
+		console.log('im the item detail page controller');
+
+		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));
+	}
+
+	updateView() {
+		console.log("name ", rhit.fbSingleItemManager.name);
+		console.log("description", rhit.fbSingleItemManager.description);
+		console.log("category", rhit.fbSingleItemManager.category);
+		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
+		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
+	}
+}
+
 /**
  * 
  * 
@@ -721,12 +793,12 @@ rhit.initializePage = function () {
 		new rhit.AddItemPageController();
 	}
 
-	// if (document.querySelector("#profilePage")) {
-	// 	const uid = urlParams.get("uid");
-	// 	console.log("You are on the profile page.");
-	// 	rhit.fbProfileItemManger = new rhit.FbProfileItemManger();
-	// 	new rhit.ProfilePageController(uid);
-	// }
+	if (document.querySelector("#itemDetailPage")) {
+		console.log('You are on the item detail page');
+		const id = urlParams.get("id");
+		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
+		new rhit.ItemDetailPage(id);
+	}
 };
 
 /* Main */
