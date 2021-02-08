@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
   <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link href="styles/nouislider.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
   <title>Rose Trades</title>
 </head>
@@ -45,12 +46,34 @@
         </div>
       </nav>
   <div id="itemDetailPage" class="container page-container">
-    ITEM DETAIL PAGE
+    
+    <div class="form-group">
+      <label for="choseItemName">Item Name</label>
+      <input type="text" class="form-control-plaintext" id="choseItemName" readonly>
+    </div>
+    <div class="form-group">
+      <label for="choseItemDescription">Item Description</label>
+      <input type="text" class="form-control-plaintext" id="choseItemDescription" readonly>
+    </div>
+    <div class="form-group">
+      <label for="choseItemRange">Item Range</label>
+      <div id="choseItemRange"></div>                
+    </div>
+    <div class="form-group">
+      <label for="choseItemCategory">Item Category</label>
+      <input type="text" class="form-control-plaintext" id="choseItemCategory" readonly>
+    </div>
+    <div class="row justify-content-center">
+      <button id="editItemBtn" type="button" class="btn">
+        Edit Item
+      </button>
+    </div>
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>
   <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="scripts/nouislider.min.js"></script>
   <script src="/__/firebase/7.18.0/firebase-app.js"></script>
   <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
