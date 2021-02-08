@@ -345,6 +345,27 @@ rhit.FbSingleItemManager = class {
 		this._unsubscribe();
 	}
 
+	update(name, description, priceRange, category) {
+		this._ref.update({
+			[rhit.FB_KEY_CATEGORY] : category,
+			[rhit.FB_KEY_ITEM_NAME] : name,
+			[rhit.FB_KEY_DESCRIPTION] : description,
+			[rhit.FB_KEY_PRICE] : priceRange,
+			
+		}).then(() => {
+			console.log("item has been updated");
+		});
+	}
+
+	delete() {
+		console.log("item successfully deleted!");
+		return this._ref.delete();
+	}
+
+	get seller(){
+		return rhit.fbAuthManager.uid;
+	}
+
 	get name() {
 		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
 	}
@@ -634,11 +655,49 @@ rhit.AddItemPageController = class {
 rhit.ItemDetailPage = class {
 	constructor(id) {
 		console.log('im the item detail page controller');
+		//Reference code from MYMOVIEQUOTE
+		// if(rhit.fbSingleQuoteManager.author == rhit.fbAuthManager.uid){
+		// 	document.querySelector("#menuEdit").style.display = "flex";
+		// 	document.querySelector("#menuDelete").style.display = "flex";
+		// }
+		let editMode = false;
+		if(rhit.fbSingleItemManager.seller == rhit.fbAuthManager.uid){
+			document.querySelector("#editItemBtn").style.display = "flex";
+			document.querySelector("#editItemBtn").onclick = (event) => {
+				editMode = !editMode;
+				console.log("editMode ON");
+				//console.log(document.querySelector("#detailButtomButton").innerHTML );
+				document.querySelector("#choseItemName").disabled = false;
+				document.querySelector("#choseItemDescription").disabled = false;
+				document.querySelector("#choseItemRange").disabled = false;
+				document.querySelector("#choseItemCategory").disabled = false;
+				document.querySelector("#updateItemBtn").style.visibility = 'visible';
+				document.querySelector("#editItemBtn").style.display = "none";
+			};
+		
+			if(document.querySelector("#updateItemBtn")){
+				const name = document.querySelector("#choseItemName").value;
+				const description = document.querySelector("#choseItemDescription").value;
+				const priceRange = document.querySelector("#choseItemRange").value;
+				const category = document.querySelector("#choseItemCategory").value;
+				//rhit.fbSingleItemManager.update(name, description, priceRange, category );
+			}
+		
+			
+		};
+
+		// document.querySelector("#submitEditQuote").onclick = (event) => {
+		// 	const quote = document.querySelector("#inputQuote").value;
+		// 	const movie = document.querySelector("#inputMovie").value;
+		// 	console.log(quote, movie);
+		// 	rhit.fbSingleQuoteManager.update(quote, movie);
+		// };
 
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));
-
+			
 		
 	}
+
 
 	updateView() {
 
@@ -673,6 +732,9 @@ rhit.ItemDetailPage = class {
 		});
 
 		mergeTooltips(slider, 15, ' - ');
+		slider.style.marginTop = "70px";
+		
+		
 
 		console.log("name ", rhit.fbSingleItemManager.name);
 		console.log("description", rhit.fbSingleItemManager.description);

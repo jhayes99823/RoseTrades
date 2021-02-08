@@ -49,23 +49,26 @@
     
     <div class="form-group">
       <label for="choseItemName">Item Name</label>
-      <input type="text" class="form-control-plaintext" id="choseItemName" readonly>
+      <input type="text" class="form-control-plaintext" id="choseItemName" disabled>
     </div>
     <div class="form-group">
       <label for="choseItemDescription">Item Description</label>
-      <input type="text" class="form-control-plaintext" id="choseItemDescription" readonly>
+      <input type="text" class="form-control-plaintext" id="choseItemDescription" disabled>
     </div>
     <div class="form-group">
       <label for="choseItemRange">Item Range</label>
-      <div id="choseItemRange"></div>                
+      <div id="choseItemRange" disabled></div>                
     </div>
     <div class="form-group">
       <label for="choseItemCategory">Item Category</label>
-      <input type="text" class="form-control-plaintext" id="choseItemCategory" readonly>
+      <input type="text" class="form-control-plaintext" id="choseItemCategory" disabled>
     </div>
-    <div class="row justify-content-center">
+    <div id= "detailButtomButton" class="row justify-content-center">
       <button id="editItemBtn" type="button" class="btn">
         Edit Item
+      </button>
+      <button id="updateItemBtn" style="visibility:hidden" type="button" class="btn">
+        Update Item
       </button>
     </div>
   </div>
