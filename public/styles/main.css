@@ -12,10 +12,13 @@ html {
 }
 
 #profilePagetagOne{
-    margin-left: 130px;
+    margin-left: 30em;
     margin-bottom: 10px;;
 }
 
+#form2{
+    margin: 0 0 0 0;
+}
 
 #sidebar .nav-item .nav-link {
     background-color: #ff4d00;
@@ -148,7 +151,7 @@ html {
     color: white;
 }
 
-#fab {
+#addItemBtn {
     position: fixed;
     right: 10px;
     bottom: 10px;
@@ -157,7 +160,7 @@ html {
     z-index: 999;
 }
 
-#fab:active {
+#addItemBtn:active {
     transform: translateY(2px);
     opacity: 0.8;
 }
