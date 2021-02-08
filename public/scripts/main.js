@@ -503,6 +503,10 @@ rhit.AccountPageController = class {
 				$("#updateBtn").attr("disabled", true);
 			}
 		});
+
+		document.querySelector("#updateBtn").addEventListener('click', (event) => {
+			rhit.fbUserManager.updateName(firstNameInput.value + " " + lastNameInput.value);
+		});
 	}
 }
 
