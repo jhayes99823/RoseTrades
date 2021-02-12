@@ -33,6 +33,7 @@ rhit.FB_KEY_ITEM_NAME = "name";
 rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_SELLER = "seller";
 rhit.FB_KEY_PRICE = "price";
+rhit.FB_KEY_ISACTIVE = "isActive";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
 rhit.fbAuthManager = null;
@@ -230,7 +231,8 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
 			[rhit.FB_KEY_DESCRIPTION]: description,
 			[rhit.FB_KEY_PRICE]: priceRange,
-			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid
+			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
+			[rhit.FB_KEY_ISACTIVE]: true
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
 		  }).
@@ -264,7 +266,8 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_NAME),
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
-		  docSnapshot.get(rhit.FB_KEY_PRICE)
+		  docSnapshot.get(rhit.FB_KEY_PRICE),
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
 		);
 		return item;
 	  }
@@ -280,8 +283,9 @@ rhit.FbAllItemManager = class {
 	}
 
 	beginListening(changeListener) {
-		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).onSnapshot((querySnapshot) => {
+		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).where(rhit.FB_KEY_ISACTIVE, "==", true).onSnapshot((querySnapshot) => {
 		  this._documentSnapshots = querySnapshot.docs;
+		  console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
 		  changeListener();
 		});
 	  }
@@ -301,7 +305,8 @@ rhit.FbAllItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_NAME),
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
-		  docSnapshot.get(rhit.FB_KEY_PRICE)
+		  docSnapshot.get(rhit.FB_KEY_PRICE),
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
 		);
 		return item;
 	  }
@@ -351,9 +356,14 @@ rhit.FbSingleItemManager = class {
 			[rhit.FB_KEY_ITEM_NAME] : name,
 			[rhit.FB_KEY_DESCRIPTION] : description,
 			[rhit.FB_KEY_PRICE] : priceRange,
-			
 		}).then(() => {
 			console.log("item has been updated");
+		});
+	}
+
+	updateActiveStatus() {
+		this._ref.update({
+			[rhit.FB_KEY_ISACTIVE]: !this.isActive
 		});
 	}
 
@@ -380,6 +390,10 @@ rhit.FbSingleItemManager = class {
 
 	get priceRange() {
 		return this._documentSnapshot.get(rhit.FB_KEY_PRICE);
+	}
+
+	get isActive() {
+		return this._documentSnapshot.get(rhit.FB_KEY_ISACTIVE);
 	}
 }
 
@@ -572,6 +586,13 @@ rhit.initializePage = function () {
 		const id = urlParams.get("id");
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
 		new rhit.ItemDetailPage(id);
+	}
+
+	if (document.querySelector("#editItemDetailPage")) {
+		console.log('You are on the item detail page');
+		const id = urlParams.get("id");
+		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
+		new rhit.EditItemDetailController(id);
 	}
 };
 

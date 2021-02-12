@@ -30,15 +30,15 @@ rhit.MyItemPageController = class {
 
 		// TODO: FIX THIS CONNECTION LATER
 
-		// const allCards = document.querySelectorAll(".detail-card");
-        // console.log(allCards);
-        // for (const card of allCards) {
-		// 	console.log("item id;  ", card.id);
-        //     const moreDetailBtn = card.querySelector('.more-details');
-        //     moreDetailBtn.addEventListener("click", (event) => {
-		// 		window.location.href = `item-detail.html?id=${card.id}`;
-        //     });
-    	// }
+		const allCards = document.querySelectorAll(".detail-card");
+        console.log(allCards);
+        for (const card of allCards) {
+			console.log("item id;  ", card.id);
+            const moreDetailBtn = card.querySelector('.more-details');
+            moreDetailBtn.addEventListener("click", (event) => {
+				window.location.href = `edit-item-detail.html?id=${card.id}`;
+            });
+    	}
 		
 	}
 

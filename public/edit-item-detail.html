@@ -45,29 +45,37 @@
           </ul>
         </div>
       </nav>
-  <div id="itemDetailPage" class="container page-container justify-content-center">
+  <div id="editItemDetailPage" class="container page-container justify-content-center">
+    <div class="justify-content-end">
+      <div class="switch">
+        <label>
+          <input id="isActive" type="checkbox">
+          Active
+        </label>
+      </div>
+    </div>
     <div class="form-group mx-auto">
       <label for="choseItemName">Item Name</label>
-      <input type="text" class="form-control-plaintext" id="choseItemName" disabled>
+      <input type="text" class="form-control" id="choseItemName">
     </div>
     <div class="form-group mx-auto">
       <label for="choseItemDescription">Item Description</label>
-      <input type="text" class="form-control-plaintext" id="choseItemDescription" disabled>
+      <input type="text" class="form-control" id="choseItemDescription">
     </div>
     <div class="form-group mx-auto">
       <label for="choseItemRange">Item Range</label>
-      <div id="choseItemRange" disabled></div>                
+      <div id="choseItemRange"></div>                
     </div>
     <div class="form-group mx-auto">
       <label for="choseItemCategory">Item Category</label>
-      <input type="text" class="form-control-plaintext" id="choseItemCategory" disabled>
+      <input type="text" class="form-control" id="choseItemCategory">
     </div>
     <div id= "detailButtomButton" class="row justify-content-center">
       <button id="editItemBtn" type="button" class="btn">
         Edit Item
       </button>
       <button id="updateItemBtn" type="button" class="btn">
-        Chat With Seller
+        Update Item
       </button>
     </div>
   </div>
@@ -81,7 +89,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/item-detail-controller.js"></script>
+  <script src="scripts/edit-detail-controller.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 
