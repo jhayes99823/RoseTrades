@@ -1,8 +1,17 @@
 var rhit = rhit || {};
 
 rhit.ItemDetailPage = class {
+	static ICON_STATUS = {
+		FAVORITED: "favorite",
+		UN_FAV: "favorite_border"
+	}
+
 	constructor(id) {
+		this._itemId = id;
 		console.log('im the item detail page controller');
+
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}
 
@@ -46,5 +55,25 @@ rhit.ItemDetailPage = class {
 		console.log("category", rhit.fbSingleItemManager.category);
 		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
 		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
+
+		const favoriteIcon = document.querySelector("#favoritedContainer");
+
+		favoriteIcon.addEventListener("click", (event) => {
+			favoriteIcon.innerHTML = (favoriteIcon.innerHTML == rhit.ItemDetailPage.ICON_STATUS.FAVORITED) ? rhit.ItemDetailPage.ICON_STATUS.UN_FAV : rhit.ItemDetailPage.ICON_STATUS.FAVORITED;
+			const favs = rhit.fbUserManager.favorites;
+
+			if (favoriteIcon.innerHTML == rhit.ItemDetailPage.ICON_STATUS.FAVORITED) {
+				if (!favs.includes(this._itemId)) {
+					favs.push(this._itemId);
+				}
+			} else if (favoriteIcon.innerHTML == rhit.ItemDetailPage.ICON_STATUS.UN_FAV){
+				const index = favs.indexOf(this._itemId);
+				if (index > -1) {
+					favs.splice(index, 1);
+				}
+			}
+
+			rhit.fbUserManager.updateFavorites(favs);
+		});
 	}
 }

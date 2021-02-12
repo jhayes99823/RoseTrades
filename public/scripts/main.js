@@ -212,6 +212,7 @@ rhit.FbUserManager = class {
 	}
 
 	get favorites() {
+		console.log('here   ', this._document);
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
 }
