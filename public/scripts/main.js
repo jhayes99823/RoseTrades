@@ -41,6 +41,7 @@ rhit.fbUserManager = null;
 rhit.fbUserItemManager = null;
 rhit.fbAllItemManager = null
 rhit.fbSingleItemManager = null;
+rhit.fbMultipleItemManager = null;
 
 /**
  * 
@@ -268,7 +269,7 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
-		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
 		);
 		return item;
 	  }
@@ -324,27 +325,27 @@ rhit.FbSingleItemManager = class {
 	}
 
 	beginListening(changeListener) {
-		this._unsubscribe = this._ref.onSnapshot((doc) => {
-		if (doc.exists) {
-			this._documentSnapshot = doc;
-			changeListener();
-		} else {
-			console.log("no such document");
-		}
-	});
-	
-	this._ref
-		.get()
-		.then((doc) => {
-		if (doc.exists) {
-			this._documentSnapshot = doc;
-		} else {
-			window.location.href = "/main-list.html";
-		}
-		})
-		.catch((error) => {
-		console.log("Error getting document: ", error);
+			this._unsubscribe = this._ref.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+				changeListener();
+			} else {
+				console.log("no such document");
+			}
 		});
+	
+		this._ref
+			.get()
+			.then((doc) => {
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+			} else {
+				window.location.href = "/main-list.html";
+			}
+			})
+			.catch((error) => {
+			console.log("Error getting document: ", error);
+			});
 	}
 	
 	stopListening() {
@@ -395,6 +396,39 @@ rhit.FbSingleItemManager = class {
 
 	get isActive() {
 		return this._documentSnapshot.get(rhit.FB_KEY_ISACTIVE);
+	}
+}
+
+rhit.FbMultipleItemManager = class {
+	constructor() {
+		console.log('multiple item manager instantiated');
+		this.documents = [];
+		this._userDoc = {};
+		this._userRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS).doc(rhit.fbAuthManager.uid);
+		this._itemRef = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
+		this._unsubscribe = null;
+		
+		this._userRef.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._userDoc = doc;
+			} else {
+				console.log("no such document");
+			}
+		});
+	}
+
+	beginListening(changeListener) {
+		console.log(this._userDoc);
+			// this._unsubscribe = this._itemRef.where('uid', 'in', this._userDoc.get(rhit.FB_KEY_FAVORITE_ITEMS)).onSnapshot((querySnapshot) => {
+			// this._documentSnapshots = querySnapshot.docs;
+			// console.log('fb mult item   ', querySnapshot.docs);
+			// console.log("FB MULTIPLE ITEM MANAGER DOC: ", querySnapshot.docs);
+			changeListener();
+		// });
+	}
+	
+	stopListening() {
+		this._unsubscribe();
 	}
 }
 
@@ -594,6 +628,11 @@ rhit.initializePage = function () {
 		const id = urlParams.get("id");
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
 		new rhit.EditItemDetailController(id);
+	}
+
+	if (document.querySelector("#favoritesPage")) {
+		console.log('You are on the favorites page');
+		new rhit.FavoritesPageController();
 	}
 };
 

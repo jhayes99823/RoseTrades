@@ -1,35 +1,30 @@
 var rhit = rhit || {};
 
-rhit.MainPageController = class {
-	constructor() {
-		console.log('im the main page controller')
+rhit.FavoritesPageController = class {
+    constructor() {
+        console.log('i am the favorites page controller');
 
-		document.querySelector("#logout").onclick = (event) => {
-			rhit.fbAuthManager.signOut();
-		}
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+    }
 
-		rhit.fbAllItemManager.beginListening(this.updateList.bind(this));
-	}
+    updateView() {
+        const newList = htmlToElement('<div id="itemRow" class="row"> </div>');
 
-	updateList() {
-		const newList = htmlToElement('<div id="itemRow" class="row"> </div>');
-
-		for (let i = 0; i < rhit.fbAllItemManager.length; i++) {
-			const item = rhit.fbAllItemManager.getItemAtIndex(i);
+		for (let i = 0; i < rhit.fbUserManager.favorites.length; i++) {
+            const item = rhit.fbUserManager.favorites[i];
 			const newCard = this._createCard(item);
 		
 			newList.appendChild(newCard);
-		}
-
-		// remove old quoteListContainer
-		const oldList = document.querySelector("#itemRow");
+        }
+        
+        const oldList = document.querySelector("#itemRow");
 		oldList.removeAttribute("id");
 		oldList.hidden = true;
 	
 		// put in new quoteListContainer
-		oldList.parentElement.appendChild(newList);
-
-		const allCards = document.querySelectorAll(".card-with-non-favorite");
+        oldList.parentElement.appendChild(newList);
+        
+        const allCards = document.querySelectorAll(".card-with-non-favorite");
 		
 		for (const card of allCards) {
 			const moreDetailBtn = card.querySelector('.more-details');
@@ -38,9 +33,9 @@ rhit.MainPageController = class {
 				window.location.href = `item-detail.html?id=${card.id}`;
 			});
 		}
-	}
+    }
 
-	_createCard(item) {
+    _createCard(item) {
 		return htmlToElement(`
 		<div id="${item.id}" class="col-md-4 card-with-non-favorite">
               <div class="card mb-4 box-shadow" data-item-id="${item.id}">
@@ -57,7 +52,7 @@ rhit.MainPageController = class {
                         More Details
                       </button>
 					</div>
-						
+
 					</div>
                 </div>
               </div>
