@@ -634,6 +634,16 @@ rhit.initializePage = function () {
 		console.log('You are on the favorites page');
 		new rhit.FavoritesPageController();
 	}
+
+	if (document.querySelector("#chatListPage")) {
+		console.log('You are on the chat list page');
+		new rhit.ChatListPageController();
+	}
+
+	if(document.querySelector("#chatPage")) {
+		console.log('You are on the chat page');
+		new rhit.ChatPageController();
+	}
 };
 
 /* Main */

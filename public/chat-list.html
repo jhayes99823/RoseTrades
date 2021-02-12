@@ -28,7 +28,7 @@
         </li>
        
         <li class="nav-item"><a id="account" class="nav-link side-bar-nav" href="account-page.html">Account</a></li>
-        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chats.html">Chats</a></li>
+        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chat-list.html">Chats</a></li>
         <li class="nav-item">
           <a class="nav-link side-bar-nav" id="favorites" href="favorites.html">Favorites</a>
         </li>
@@ -44,8 +44,10 @@
       </ul>
     </div>
   </nav>
-  <div id="chatPage" class="container page-container">
-    CHAT PAGE
+  <div id="chatListPage" class="container page-container">
+    <div id="chatContainer" class="container">
+      <div id="chatRow"></div>
+    </div>
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
@@ -56,7 +58,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/utility-functions.js"></script>
+  <script src="scripts/chat-list-controller.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 
