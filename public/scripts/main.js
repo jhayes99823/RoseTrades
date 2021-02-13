@@ -33,13 +33,34 @@ rhit.FB_KEY_ITEM_NAME = "name";
 rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_SELLER = "seller";
 rhit.FB_KEY_PRICE = "price";
+rhit.FB_KEY_ISACTIVE = "isActive";
+rhit.FB_KEY_SELLER_NAME = "sellerName";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
+
+/**
+ * 
+ * MANAGER VARIABLES
+ * 
+ * 
+ */
 rhit.fbAuthManager = null;
 rhit.fbUserManager = null;
 rhit.fbUserItemManager = null;
 rhit.fbAllItemManager = null
 rhit.fbSingleItemManager = null;
+rhit.fbChatsManager = null;
+
+/**
+ * 
+ * 
+ * CHAT COLLECTION VARIABLES
+ * 
+ * 
+ */
+rhit.FB_COLLECITON_CHATS = "chats";
+rhit.FB_KEY_PEOPLE = "people";
+rhit.FB_KEY_MESSAGES = "messages";
 
 /**
  * 
@@ -56,6 +77,14 @@ rhit.fbSingleItemManager = null;
 		this.category = category;
 		this.priceRange = priceRange;
 	}
+ }
+
+ rhit.Chat = class {
+	 constructor(id, people, messages) {
+		this.id = id;
+		this.people = people;
+		this.messages = messages;
+	 }
  }
 
 /**
@@ -137,7 +166,6 @@ rhit.FbUserManager = class {
 		console.log("Listening for uid", uid);
 		const userRef = this._collectoinRef.doc(uid);
 		this._unsubscribe = userRef.onSnapshot((doc) => {
-			console.log('fb user manager     ', doc);
 			if (doc.exists) {
 				this._document = doc;
 				console.log('doc.data() :', doc.data());
@@ -172,7 +200,7 @@ rhit.FbUserManager = class {
 				console.log("Creating the user!");
 				return userRef.set({
 					[rhit.FB_KEY_NAME]: name,
-					[rhit.FB_KEY_FAVORITE_ITEMS]: []
+					[rhit.FB_KEY_FAVORITE_ITEMS]: [],
 				}).then(() => {
 					return true;
 				});
@@ -207,10 +235,12 @@ rhit.FbUserManager = class {
 	}
 
 	get name() {
+		console.log('mt name  ', this._document.get(rhit.FB_KEY_NAME));
 		return this._document.get(rhit.FB_KEY_NAME);
 	}
 
 	get favorites() {
+		console.log('here   ', this._document);
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
 }
@@ -224,13 +254,16 @@ rhit.FbUserItemManager = class {
     	this._unsubscribe = null;
 	}
 
-	add(name, description, priceRange, category) {
+	add(name, description, priceRange, category, sellerName) {
+		console.log('seller name  ', rhit.fbAuthManager.name);
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
 			[rhit.FB_KEY_DESCRIPTION]: description,
 			[rhit.FB_KEY_PRICE]: priceRange,
-			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid
+			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
+			[rhit.FB_KEY_SELLER_NAME]: sellerName,
+			[rhit.FB_KEY_ISACTIVE]: true
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
 		  }).
@@ -264,7 +297,8 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_NAME),
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
-		  docSnapshot.get(rhit.FB_KEY_PRICE)
+		  docSnapshot.get(rhit.FB_KEY_PRICE),
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
 		);
 		return item;
 	  }
@@ -280,8 +314,9 @@ rhit.FbAllItemManager = class {
 	}
 
 	beginListening(changeListener) {
-		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).onSnapshot((querySnapshot) => {
+		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).where(rhit.FB_KEY_ISACTIVE, "==", true).onSnapshot((querySnapshot) => {
 		  this._documentSnapshots = querySnapshot.docs;
+		  console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
 		  changeListener();
 		});
 	  }
@@ -301,10 +336,11 @@ rhit.FbAllItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_NAME),
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
-		  docSnapshot.get(rhit.FB_KEY_PRICE)
+		  docSnapshot.get(rhit.FB_KEY_PRICE),
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
 		);
 		return item;
-	  }
+	}
 }
 
 rhit.FbSingleItemManager = class {
@@ -319,26 +355,26 @@ rhit.FbSingleItemManager = class {
 
 	beginListening(changeListener) {
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
-		if (doc.exists) {
-			this._documentSnapshot = doc;
-			changeListener();
-		} else {
-			console.log("no such document");
-		}
-	});
-	
-	this._ref
-		.get()
-		.then((doc) => {
-		if (doc.exists) {
-			this._documentSnapshot = doc;
-		} else {
-			window.location.href = "/main-list.html";
-		}
-		})
-		.catch((error) => {
-		console.log("Error getting document: ", error);
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+				changeListener();
+			} else {
+				console.log("no such document");
+			}
 		});
+	
+		this._ref
+			.get()
+			.then((doc) => {
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+			} else {
+				window.location.href = "/main-list.html";
+			}
+			})
+			.catch((error) => {
+			console.log("Error getting document: ", error);
+			});
 	}
 	
 	stopListening() {
@@ -351,9 +387,14 @@ rhit.FbSingleItemManager = class {
 			[rhit.FB_KEY_ITEM_NAME] : name,
 			[rhit.FB_KEY_DESCRIPTION] : description,
 			[rhit.FB_KEY_PRICE] : priceRange,
-			
 		}).then(() => {
 			console.log("item has been updated");
+		});
+	}
+
+	updateActiveStatus() {
+		this._ref.update({
+			[rhit.FB_KEY_ISACTIVE]: !this.isActive
 		});
 	}
 
@@ -380,6 +421,79 @@ rhit.FbSingleItemManager = class {
 
 	get priceRange() {
 		return this._documentSnapshot.get(rhit.FB_KEY_PRICE);
+	}
+
+	get isActive() {
+		return this._documentSnapshot.get(rhit.FB_KEY_ISACTIVE);
+	}
+
+	get seller() {
+		return this._documentSnapshot.get(rhit.FB_KEY_SELLER);
+	}
+
+	get sellerName() {
+		return this._documentSnapshot.get(rhit.FB_KEY_SELLER_NAME);
+	}
+}
+
+rhit.FbChatsManager = class {
+	constructor(sender, receiver) {
+		this._documentSnapshots = []
+		this._unsubscribe = null;
+		this._ref = firebase
+		  .firestore()
+		  .collection(rhit.FB_COLLECITON_CHATS);
+		this._sender = sender;
+		this._receiver = receiver;
+	}
+
+	addNewChatString(people, messages) {
+		console.log('people  ', people, '   messages  ', messages);
+		this._ref.add({
+			[rhit.FB_KEY_PEOPLE]: people,
+			[rhit.FB_KEY_MESSAGES]: messages
+		}).then(function (docRef) {
+			console.log("Document written in ID: ", docRef.id);
+		}).catch((error) => {
+			console.log("Error getting document: ", error);
+		});
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
+			console.log('chats manager begin   ', querySnapshot);
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
+	}
+	
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getItemAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		const chat = new rhit.Chat(
+		  docSnapshot.id,
+		  docSnapshot.get(rhit.FB_KEY_PEOPLE),
+		  docSnapshot.get(rhit.FB_KEY_MESSAGES)
+		);
+		return chat;
+	}
+
+	update(chat) {
+		return this._ref.doc(chat.id).update({
+			[rhit.FB_KEY_MESSAGES]: chat.messages
+		}).then(() => {
+			console.log("Document successfully updated with name!");
+		})
+		.catch(function (error) {
+			console.error("Error updating document: ", error);
+		});
 	}
 }
 
@@ -572,6 +686,34 @@ rhit.initializePage = function () {
 		const id = urlParams.get("id");
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
 		new rhit.ItemDetailPage(id);
+	}
+
+	if (document.querySelector("#editItemDetailPage")) {
+		console.log('You are on the item detail page');
+		const id = urlParams.get("id");
+		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
+		new rhit.EditItemDetailController(id);
+	}
+
+	if (document.querySelector("#favoritesPage")) {
+		console.log('You are on the favorites page');
+		new rhit.FavoritesPageController();
+	}
+
+	if (document.querySelector("#chatListPage")) {
+		console.log('You are on the chat list page');
+		rhit.fbChatsManager = new rhit.FbChatsManager();
+		new rhit.ChatListPageController();
+	}
+
+	if (document.querySelector("#chatPage")) {
+		console.log('You are on the chat page');
+		const senderUID = urlParams.get("sender");
+		const receiverUID = urlParams.get('receiver');
+		const receiverName = urlParams.get('receiverName');
+		console.log('receiverName', receiverName);
+		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
+		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
 	}
 };
 

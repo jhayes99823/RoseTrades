@@ -28,7 +28,7 @@
         </li>
        
         <li class="nav-item"><a id="account" class="nav-link side-bar-nav" href="account-page.html">Account</a></li>
-        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chats.html">Chats</a></li>
+        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chat-list.html">Chats</a></li>
         <li class="nav-item">
           <a class="nav-link side-bar-nav" id="favorites" href="favorites.html">Favorites</a>
         </li>
@@ -45,7 +45,26 @@
     </div>
   </nav>
   <div id="chatPage" class="container page-container">
-    CHAT PAGE
+        <div id="chats-list">
+            <!-- <div class="chat-container">
+                <p>Hello. How are you today?</p>
+                <span class="time-right">11:00</span>
+            </div>
+            
+            <div class="chat-container darker">
+                <p>Hey! I'm fine. Thanks for asking!</p>
+                <span class="time-left">11:01</span>
+            </div> -->
+        </div>
+        <div class="fixed-bottom">
+            <div class="input-group">
+                <input id="messageInput" type="text" class="form-control" placeholder="Type your message here...">
+                <span class="input-group-btn">
+                  <button id="enterBtn" class="btn btn-default main-btn" type="button">Enter</button>
+                </span>
+            </div>
+        </div>
+    </div>
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
@@ -56,7 +75,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="scripts/utility-functions.js"></script>
+  <script src="scripts/chat-controller.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 
