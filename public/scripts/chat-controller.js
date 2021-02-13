@@ -1,13 +1,15 @@
 var rhit = rhit || {};
 
 rhit.ChatPageController = class {
-    constructor(sender, receiever) {
+    constructor(sender, receiever, receieverName) {
         console.log('i am the chat controller page');
+        rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 
-        console.log('sender  ', sender, '  receiver  ', receiever);
+        console.log('sender  ', sender, '  receiver  ', receiever, '    name   ', receieverName);
 
         this._sender = sender;
         this._receiver = receiever;
+        this._receiverName = receieverName;
         this._currChatIndex = -1;
 
         const messageInput = document.querySelector("#messageInput");
@@ -26,8 +28,8 @@ rhit.ChatPageController = class {
                     rhit.fbChatsManager.update(chat);
                     messageInput.value = "";
                 } else {
-                    console.log('made it here');
-                    rhit.fbChatsManager.addNewChatString([this._sender, this._receiver], [{message: messageInput.value, sender: this._sender}]);
+                    console.log('made it here    ', this._receiverName);
+                    rhit.fbChatsManager.addNewChatString([{"username": this._sender, "name": rhit.fbUserManager.name}, {"username": this._receiver, "name": this._receiverName}], [{message: messageInput.value, sender: this._sender}]);
                     messageInput.value = "";
                 }
             }
@@ -44,13 +46,23 @@ rhit.ChatPageController = class {
                 messageInput.value = "";
             } else {
                 messageInput.value = "";
-                rhit.fbChatsManager.addNewChatString([this._sender, this._receiver], [{message: messageInput.value, sender: this._sender}]);
+                rhit.fbChatsManager.addNewChatString([{"username": this._sender, "name": rhit.fbUserManager.name}, {"username": this._receiver, "name": this._receiverName}], [{message: messageInput.value, sender: this._sender}]);
             }
         });
     
-        rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
         rhit.fbChatsManager.beginListening(this.updateView.bind(this));
     }
+
+    search(nameKey, myArray){
+		for (let i = 0; i < myArray.length; i++) {
+            console.log('here  ', myArray[i].username,  '    ', nameKey);
+			if (myArray[i].username === nameKey) {
+				return i;
+			}
+        }
+        
+        return -1;
+	}
 
     updateView() {
         const newList = htmlToElement('<div id="chats-list"></div>');
@@ -62,8 +74,14 @@ rhit.ChatPageController = class {
 
             console.log('sender  ', this._sender, '  receiver  ', this._receiver);
 
-            if (chat.people.includes(this._sender) && chat.people.includes(this._receiver)) {
+            console.log('receiver index   ', this.search(this._receiver, chat.people));
+            console.log('sender index     ', this.search(this._sender, chat.people));
+
+            console.log('find the index   ', (this.search(this._sender, chat.people) > -1) && (this.search(this._receiver, chat.people) > -1), '     ', i);
+
+            if (((this.search(this._sender, chat.people) > -1) && (this.search(this._receiver, chat.people) > -1)) == true) {
                 this._currChatIndex = i;
+                console.log('curr chat   ', i);
                 for (let message of chat.messages) {
                     let messageCard = null;
                     console.log('made it here  ', message.sender);

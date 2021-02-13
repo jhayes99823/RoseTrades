@@ -34,6 +34,7 @@ rhit.FB_KEY_DESCRIPTION = "description";
 rhit.FB_KEY_SELLER = "seller";
 rhit.FB_KEY_PRICE = "price";
 rhit.FB_KEY_ISACTIVE = "isActive";
+rhit.FB_KEY_SELLER_NAME = "sellerName";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
 
@@ -253,7 +254,7 @@ rhit.FbUserItemManager = class {
     	this._unsubscribe = null;
 	}
 
-	add(name, description, priceRange, category) {
+	add(name, description, priceRange, category, sellerName) {
 		console.log('seller name  ', rhit.fbAuthManager.name);
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
@@ -261,6 +262,7 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_DESCRIPTION]: description,
 			[rhit.FB_KEY_PRICE]: priceRange,
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
+			[rhit.FB_KEY_SELLER_NAME]: sellerName,
 			[rhit.FB_KEY_ISACTIVE]: true
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
@@ -428,6 +430,10 @@ rhit.FbSingleItemManager = class {
 	get seller() {
 		return this._documentSnapshot.get(rhit.FB_KEY_SELLER);
 	}
+
+	get sellerName() {
+		return this._documentSnapshot.get(rhit.FB_KEY_SELLER_NAME);
+	}
 }
 
 rhit.FbChatsManager = class {
@@ -437,7 +443,6 @@ rhit.FbChatsManager = class {
 		this._ref = firebase
 		  .firestore()
 		  .collection(rhit.FB_COLLECITON_CHATS);
-		this._userRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS);
 		this._sender = sender;
 		this._receiver = receiver;
 	}
@@ -743,8 +748,10 @@ rhit.initializePage = function () {
 		console.log('You are on the chat page');
 		const senderUID = urlParams.get("sender");
 		const receiverUID = urlParams.get('receiver');
+		const receiverName = urlParams.get('receiverName');
+		console.log('receiverName', receiverName);
 		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
-		new rhit.ChatPageController(senderUID, receiverUID);
+		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
 	}
 };
 
