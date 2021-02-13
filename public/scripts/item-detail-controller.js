@@ -10,6 +10,10 @@ rhit.ItemDetailPage = class {
 		this._itemId = id;
 		console.log('im the item detail page controller');
 
+		document.querySelector("#chatWithSellerBtn").addEventListener('click', (event) => {
+			window.location.href = `/chat.html?sender=${rhit.fbAuthManager.uid}&receiver=${rhit.fbSingleItemManager.seller}`
+		});
+
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}

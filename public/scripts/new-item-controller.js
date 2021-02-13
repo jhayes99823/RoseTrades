@@ -4,6 +4,8 @@ rhit.AddItemPageController = class {
 	constructor() {
 		console.log('im the add item page controller');
 
+		rhit.fbUserManager(rhit.fbAuthManager.uid, this.updateView.bind(this));
+
 		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
 		});
@@ -43,10 +45,16 @@ rhit.AddItemPageController = class {
 				low: slider.noUiSlider.get()[0],
 				high: slider.noUiSlider.get()[1]
 			};
+
+			console.log(rhit.fbUserManager.name);
 			
 			console.log(name, description, category, priceRange);
 
-			rhit.fbUserItemManager.add(name, description, priceRange, category);
+			// rhit.fbUserItemManager.add(name, description, priceRange, category);
 		});
+	}
+
+	updateView() {
+
 	}
 }
