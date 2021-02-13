@@ -485,44 +485,6 @@ rhit.FbChatsManager = class {
 		return chat;
 	}
 
-	// getUserNamesAtIndex(index) {
-	// 	const docSnapshot = this._documentSnapshots[index];
-	// 	let userOne = {};
-	// 	let userTwo = {};
-
-	// 	console.log()
-
-	// 	userOne = this._userRef.doc(this._documentSnapshots[index].get(rhit.FB_KEY_PEOPLE)[0]).onSnapshot((doc) => {
-	// 		this._userRef
-	// 		.get()
-	// 		.then((doc) => {
-	// 		if (doc.exists) {
-	// 			userOne = doc;
-	// 		}
-	// 		})
-	// 		.catch((error) => {
-	// 		console.log("Error getting document: ", error);
-	// 		});
-	// 	});
-
-	//  	userTwo = this._userRef.doc(this._documentSnapshots[index].get(rhit.FB_KEY_PEOPLE)[0]).onSnapshot((doc) => {
-	// 		this._userRef
-	// 		.get()
-	// 		.then((doc) => {
-	// 		if (doc.exists) {
-	// 			userTwo = doc;
-	// 		}
-	// 		})
-	// 		.catch((error) => {
-	// 		console.log("Error getting document: ", error);
-	// 		});
-	// 	});
-
-	// 	console.log('user one ', userOne, '   user two  ', userTwo);
-
-	// 	return [userOne.get(rhit.FB_KEY_NAME), userTwo.get(rhit.FB_KEY_NAME)];
-	// }
-
 	update(chat) {
 		return this._ref.doc(chat.id).update({
 			[rhit.FB_KEY_MESSAGES]: chat.messages
