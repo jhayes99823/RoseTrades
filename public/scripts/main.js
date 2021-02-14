@@ -721,6 +721,31 @@ rhit.initializePage = function () {
 rhit.main = function () {
 	console.log("Ready");
 
+	const messaging = firebase.messaging();
+
+	Notification.requestPermission().then((permission) => {
+		if (permission === 'granted') {
+		  console.log('Notification permission granted.');
+		  // TODO(developer): Retrieve a registration token for use with FCM.
+		  // In many cases once an app has been granted notification permission,
+		  // it should update its UI reflecting this.
+		//   resetUI();
+
+			messaging.getToken({vapidKey: 'BGQCSymaqrIJJuXjy3R3mF4wpoCRuHKWXnQEfAbnqcU5kIdm7a6DwIC2inbwUG-ucJtkFmVxZbU_Vc1bYXz8cqQ'})
+				.then((currentToken) => {
+					console.log('token ', currentToken);
+				});
+		} else {
+		  console.log('Unable to get permission to notify.');
+		}
+	});
+
+	messaging.onMessage((payload) => {
+		console.log('Message received. ', payload);
+		// Update the UI to include the received message.
+		// appendMessage(payload);
+	});
+
 	rhit.fbAuthManager = new rhit.FbAuthManager();
 	rhit.fbUserManager = new rhit.FbUserManager();
 	rhit.fbAuthManager.beginListening(() => {
