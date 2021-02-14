@@ -16,7 +16,7 @@ rhit.ChatPageController = class {
 
         messageInput.addEventListener("keypress", (event) => {
             if (event.key === 'Enter') {
-                if (this._currChatIndex > -1) {
+                if (this._currChatIndex > -1 && messageInput.value != "") {
                     console.log('enter key pressed');
                     let chat = rhit.fbChatsManager.getItemAtIndex(this._currChatIndex);
                     console.log('chat   ', chat);
@@ -36,7 +36,7 @@ rhit.ChatPageController = class {
         });
 
         document.querySelector("#enterBtn").addEventListener('click', (event) => {
-            if (this._currChatIndex > -1) {
+            if (this._currChatIndex > -1 && messageInput.value != "") {
                 let chat = rhit.fbChatsManager.getItemAtIndex(this._currChatIndex);
                 chat.messages.push({
                     message: messageInput.value,
