@@ -75,13 +75,14 @@ rhit.FB_KEY_MESSAGES = "messages";
  */
 
  rhit.Item = class {
-	constructor(id, name, description, category, priceRange) {
+	constructor(id, name, description, category, priceRange, isActive, photoUrl) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.category = category;
 		this.priceRange = priceRange;
-		this.photoUrl = null;
+		this.isActive = isActive;
+		this.photoUrl = photoUrl;
 	}
  }
 
@@ -255,10 +256,12 @@ rhit.FbUserItemManager = class {
 	constructor() {
 		this.documents = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
+		this._storageRef = null;
+		this._newItemId = null;
     	this._unsubscribe = null;
 	}
 
-	add(name, description, priceRange, category, sellerName) {
+	add(name, description, priceRange, category, sellerName, file) {
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
@@ -267,9 +270,22 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
 			[rhit.FB_KEY_SELLER_NAME]: sellerName,
 			[rhit.FB_KEY_ISACTIVE]: true,
-			//[rhit.FB_PHOTO]: path,
-		}).then(function (docRef) {
+			[rhit.FB_PHOTOURL]: "",
+		}).then((docRef) => {
 			console.log("Document written in ID: ", docRef.id);
+			return docRef.id;
+		  }).
+		  then((id) => {
+			this._newItemId = id;
+			this._storageRef = firebase.storage().ref().child(id);
+			return this._storageRef.put(file);
+		  }).
+		  then((UploadTaskSnapshot) => {
+			return this._storageRef.getDownloadURL();
+		  }).
+		  then((downloadUrl) => {
+			rhit.fbSingleItemManager = new rhit.FbSingleItemManager(this._newItemId);
+			rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl)
 		  }).
 		  then(() => {
 			window.location.href = '/my-item.html';
@@ -304,6 +320,7 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
 		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
+		  docSnapshot.get(rhit.FB_PHOTOURL)
 		);
 		return item;
 	  }
@@ -324,7 +341,6 @@ rhit.FbAllItemManager = class {
 						.where(rhit.FB_KEY_ISACTIVE, "==", true);
 						
 		if (category != '') {
-			console.log('made it here  ', category);
 			query = query.where(rhit.FB_KEY_CATEGORY, '==', rhit.FbAllItemManager.CATEGORIES[category - 1]);
 		}
 
@@ -351,7 +367,8 @@ rhit.FbAllItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
-		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
+		  docSnapshot.get(rhit.FB_PHOTOURL)
 		);
 		return item;
 	}
@@ -428,10 +445,10 @@ rhit.FbSingleItemManager = class {
 		return this._ref.delete();
 	}
 
-	get photoUrl(){
+	get photoUrl() {
 		return this._documentSnapshot.get(rhit.FB_PHOTOURL);
 	}
-	get id(){
+	get id() {
 		return this._documentSnapshot.get(rhit.FB_ITEM_ID);
 	}
 
