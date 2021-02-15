@@ -4,9 +4,7 @@ rhit.AccountPageController = class {
 	constructor() {
 		console.log('im the account page controller');
 
-		document.querySelector("#logout").addEventListener("click", (event) => {
-			rhit.fbAuthManager.signOut();
-        });
+		
         
         document.querySelector("#updateBtn").addEventListener('click', (event) => {
             rhit.fbUserManager.updateName(firstNameInput.value + " " + lastNameInput.value);

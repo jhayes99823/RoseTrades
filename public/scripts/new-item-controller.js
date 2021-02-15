@@ -6,10 +6,7 @@ rhit.AddItemPageController = class {
 		console.log('im the add item page controller');
 
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
-		
-		document.querySelector("#logout").addEventListener("click", (event) => {
-			rhit.fbAuthManager.signOut();
-		});
+	
 		document.querySelector("#addPhoto").addEventListener("click", (event) => {
 			console.log('upload photo pressed');
 			document.querySelector("#inputFile").click();

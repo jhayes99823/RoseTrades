@@ -14,9 +14,6 @@
 <body>
   <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
     <div class="flex-row d-flex">
-      <button type="button" class="navbar-toggler mr-2" data-toggle="offcanvas">
-        <span class="navbar-toggler-icon"></span>
-      </button>
       <a class="navbar-brand" href="#">Rose Trades</a>
     </div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
@@ -46,30 +43,20 @@
     </div>
   </nav>
   <div class="container-fluid h-100" id="mainList">
-    <div class="row row-offcanvas row-offcanvas-left h-100">
-      <div class="col-md-3 col-lg-2 sidebar-offcanvas bg-light pl-0" id="sidebar" role="navigation">
-        <ul class="nav flex-column sticky-top pl-0 pt-5 mt-3">
-          <li class="nav-item"><a class="nav-link side-bar-nav" href="#" data-name="furniture" id="furniture">Furniture</a></li>
-          <li class="nav-item"><a class="nav-link side-bar-nav" data-name="books" href="#" id="books">Books</a></li>
-          <li class="nav-item">
-            <a class="nav-link side-bar-nav" href="#" data-name="electronics" id="electronics">Electronics</a>
-          </li>
-          <li class="nav-item"><a class="nav-link side-bar-nav" data-name="food" href="#" id="food">Food</a></li>
-          <li class="nav-item">
-            <a class="nav-link selected-sidebar-item side-bar-nav" data-name="all" href="#" id="all">All</a>
-          </li>
-        </ul>
-      </div>
-      <!--/col-->
-
       <div class="col main pt-5 mt-3">
         <div id="search-bar" class="container mx-auto my-3">
           <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-9">
               <input class="form-control" type="search" placeholder="Search" aria-label="Search" />
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
               <button class="btn" type="submit">Search</button>
+            </div>
+            <div class="col-md-2">
+              <p class="btn" data-toggle="modal" data-target="#filterItems">Filter</p>
+              <button id="removeFilterBtn" type="button" class="close" data-dismiss="modal" aria-label="Close" hidden>
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
           </div>
         </div>
@@ -81,6 +68,37 @@
     </div>
   </div>
   <!--/.container-->
+
+  <!-- Filtering Modal -->
+  <div class="modal fade" id="filterItems" tabindex="-1" role="dialog" aria-labelledby="Filter Items"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered model-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Filter Items</h5>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="form-group mx-auto">
+              <label for="itemCategory">Item Category</label>
+              <select class="form-select form-control" id="itemCategory" aria-label="Default select example">
+                <option selected value="0">Select item category</option>
+                <option value="1">Books</option>
+                <option value="2">Electronics</option>
+                <option value="3">Food</option>
+                <option value="4">Furniture</option>
+                <option value="5">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+          <button type="button" id="submitFilterOptions" class="btn btn-primary" data-dismiss="modal">Filter</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
@@ -94,6 +112,7 @@
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/7.18.0/firebase-storage.js"></script>
   <script src="/__/firebase/init.js"></script>
+  <script src="scripts/nouislider.min.js"></script>
   <script src="scripts/main-list-controller.js"></script>
   <script src="scripts/main.js"></script>
 </body>
