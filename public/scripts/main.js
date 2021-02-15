@@ -287,7 +287,7 @@ rhit.FbUserItemManager = class {
 			rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl)
 		  }).
 		  then(() => {
-			
+			window.location.href = '/my-item.html';
 		  })
 		  .catch(function (error) {
 			console.error("Error adding document: ", error);
