@@ -3,7 +3,7 @@ var rhit = rhit || {};
 rhit.EditItemDetailController = class {
 	constructor(id) {
 		console.log('im the edit item detail page controller');
-
+		this._currFile = null;
 		document.querySelector("#updateItemBtn").addEventListener("click", (event) => {
 			const name = document.querySelector("#choseItemName").value;
 			const description = document.querySelector("#choseItemDescription").value;
@@ -15,7 +15,7 @@ rhit.EditItemDetailController = class {
 				high: slider.noUiSlider.get()[1]
 			};
 
-			rhit.fbSingleItemManager.update(name, description, priceRange, category);
+			rhit.fbSingleItemManager.update(name, description, priceRange, category, this._currFile);
 		});
 
 		document.querySelector("#isActive").addEventListener("change", (event) => {
@@ -28,6 +28,30 @@ rhit.EditItemDetailController = class {
 				window.location.href = "/my-item.html";
 			});
 		}
+
+		document.querySelector("#photo").onclick = (event) => {
+			const desertRef  = firebase.storage().ref().child(rhit.fbSingleItemManager.id);
+				// Delete the file
+			desertRef.delete().then(() => {
+				console.log("firestorage DELETED");
+			}).catch((error) => {
+				console.log("ERROR:  ",error);
+			});
+
+
+			document.querySelector("#inputFile").click();
+		}
+
+		document.querySelector("#inputFile").addEventListener("change", (event) => {
+			this._currFile = event.target.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#photo').attr('src', e.target.result);
+			}
+
+			reader.readAsDataURL(event.target.files[0]);
+			console.log(`Received file named ${this._currFile.name}`);
+		});
 
 		// document.querySelector("#addPhoto").addEventListener("click", (event) => {
 		// 	document.querySelector("#inputFile").click();
