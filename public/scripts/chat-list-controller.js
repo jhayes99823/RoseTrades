@@ -15,8 +15,6 @@ rhit.ChatListPageController = class {
             const chatListCard = this._createCardList(chat);
             const userName = this.search(rhit.fbAuthManager.uid, chat.people);
             const receiverName = chat.people[userName.user.index == 0 ? 1 : 0];
-                console.log('username   ', userName);
-                console.log('receiver name  ', receiverName);
             chatListCard.onclick = (event) => {        
                 window.location.href = `/chat.html?sender=${receiverName.username}&receiver=${userName.user.username}&receiverName=${userName.user.name}`;
             };
@@ -50,7 +48,6 @@ rhit.ChatListPageController = class {
 
     _createCardList(message) {
         const userName = this.search(rhit.fbAuthManager.uid, message.people);
-        console.log('username  ', userName);
         return htmlToElement(
             `
             <div class="list-group-item list-group-item-action flex-column align-items-start active chat-list-container">

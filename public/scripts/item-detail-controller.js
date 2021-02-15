@@ -65,10 +65,6 @@ rhit.ItemDetailPage = class {
 				}
 		});
 
-		slider.noUiSlider.on('change', function () { 
-			console.log(slider.noUiSlider.get());
-		});
-
 		mergeTooltips(slider, 15, ' - ');
 		slider.style.marginTop = "70px";
 

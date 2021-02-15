@@ -239,12 +239,10 @@ rhit.FbUserManager = class {
 	}
 
 	get name() {
-		console.log('mt name  ', this._document.get(rhit.FB_KEY_NAME));
 		return this._document.get(rhit.FB_KEY_NAME);
 	}
 
 	get favorites() {
-		console.log('here   ', this._document);
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
 }
@@ -259,7 +257,6 @@ rhit.FbUserItemManager = class {
 	}
 
 	add(name, description, priceRange, category, sellerName) {
-		console.log('seller name  ', rhit.fbAuthManager.name);
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
@@ -472,7 +469,6 @@ rhit.FbChatsManager = class {
 	}
 
 	addNewChatString(people, messages) {
-		console.log('people  ', people, '   messages  ', messages);
 		this._ref.add({
 			[rhit.FB_KEY_PEOPLE]: people,
 			[rhit.FB_KEY_MESSAGES]: messages
@@ -485,7 +481,6 @@ rhit.FbChatsManager = class {
 
 	beginListening(changeListener) {
 		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
-			console.log('chats manager begin   ', querySnapshot);
 			this._documentSnapshots = querySnapshot.docs;
 			changeListener();
 		});
@@ -533,7 +528,6 @@ rhit.LoginPageController = class {
 	constructor() {
 		console.log('im the login page controller')
 		document.querySelector("#loginButton").onclick = (event) => {
-			console.log('made it here');
 		  rhit.fbAuthManager.signIn();
 		}
 	}
@@ -735,7 +729,6 @@ rhit.initializePage = function () {
 		const senderUID = urlParams.get("sender");
 		const receiverUID = urlParams.get('receiver');
 		const receiverName = urlParams.get('receiverName');
-		console.log('receiverName', receiverName);
 		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
 		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
 	}

@@ -47,11 +47,7 @@ rhit.AddItemPageController = class {
 					}
 				}
 		});
-
-		slider.noUiSlider.on('change', function () { 
-			console.log(slider.noUiSlider.get());
-		});
-
+		
 		mergeTooltips(slider, 15, ' - ');
 
 		document.querySelector("#addItemBtn").addEventListener("click", (event) => {
