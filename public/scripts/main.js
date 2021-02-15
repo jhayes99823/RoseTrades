@@ -38,8 +38,7 @@ rhit.FB_KEY_SELLER = "seller";
 rhit.FB_KEY_PRICE = "price";
 rhit.FB_KEY_ISACTIVE = "isActive";
 rhit.FB_KEY_SELLER_NAME = "sellerName";
-
-rhit.FB_KEY_SCHEDULE = "schedule";
+rhit.FB_KEY_KEYWORD = "keywords";
 rhit.FB_PHOTOURL = "photoUrl";
 
 /**
@@ -74,7 +73,7 @@ rhit.FB_KEY_MESSAGES = "messages";
  */
 
  rhit.Item = class {
-	constructor(id, name, description, category, priceRange, isActive, photoUrl) {
+	constructor(id, name, description, category, priceRange, isActive, photoUrl, keywords) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -82,6 +81,7 @@ rhit.FB_KEY_MESSAGES = "messages";
 		this.priceRange = priceRange;
 		this.isActive = isActive;
 		this.photoUrl = photoUrl;
+		this.keywords = keywords;
 	}
  }
 
@@ -260,7 +260,7 @@ rhit.FbUserItemManager = class {
     	this._unsubscribe = null;
 	}
 
-	add(name, description, priceRange, category, sellerName, file) {
+	add(name, description, priceRange, category, sellerName, file, keywords) {
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
@@ -270,6 +270,7 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_SELLER_NAME]: sellerName,
 			[rhit.FB_KEY_ISACTIVE]: true,
 			[rhit.FB_PHOTOURL]: "",
+			[rhit.FB_KEY_KEYWORD]: keywords
 		}).then((docRef) => {
 			console.log("Document written in ID: ", docRef.id);
 			return docRef.id;
@@ -324,7 +325,8 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
 		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
-		  docSnapshot.get(rhit.FB_PHOTOURL)
+		  docSnapshot.get(rhit.FB_PHOTOURL),
+		  docSnapshot.get(rhit.FB_KEY_KEYWORD)
 		);
 		return item;
 	  }
@@ -337,6 +339,14 @@ rhit.FbAllItemManager = class {
 		this.documents = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
     	this._unsubscribe = null;
+	}
+
+	searchByKeyword(changeListener, search) {
+		console.log('being search with  ', search);
+		this._unsubscribe = this._ref.where(rhit.FB_KEY_KEYWORD, "array-contains-any", search).onSnapshot((querySnapshot) => {
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
 	}
 
 	beginListening(changeListener, category = '') {
@@ -371,7 +381,8 @@ rhit.FbAllItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
 		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
-		  docSnapshot.get(rhit.FB_PHOTOURL)
+		  docSnapshot.get(rhit.FB_PHOTOURL),
+		  docSnapshot.get(rhit.FB_KEY_KEYWORD)
 		);
 		return item;
 	}
