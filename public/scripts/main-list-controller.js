@@ -4,6 +4,28 @@ rhit.MainPageController = class {
 	constructor() {
 		console.log('im the main page controller');
 
+		const searchbar = document.querySelector("#searchBar");
+		const searchBtn = document.querySelector("#submitSearch");
+
+		searchBtn.addEventListener("click", (event) => {
+			console.log('value  ', searchbar.value);
+			let searches = searchbar.value.split(" ");
+			rhit.fbAllItemManager.searchByKeyword(this.updateList.bind(this), searches);
+		});
+
+		searchbar.addEventListener("keypress", (event) => {
+			if (event.key === "Enter") {
+				console.log('value  ', searchbar.value);
+				let searches = searchbar.value.split(" ");
+				rhit.fbAllItemManager.searchByKeyword(this.updateList.bind(this), searches);
+			}
+		});
+
+		searchbar.addEventListener("focusout", (event) => {
+			searchbar.value = "";
+		})
+
+
 		document.querySelector("#submitFilterOptions").addEventListener("click", (event) => {
 			let category = document.querySelector("#itemCategory").value;
 			category = (category == 0) ? 1 : category; 
