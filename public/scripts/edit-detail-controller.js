@@ -30,7 +30,11 @@ rhit.EditItemDetailController = class {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
 		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
 		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
-		$("#isActive").attr("checked", rhit.fbSingleItemManager.isActive);
+		 console.log("photoURL=  ", rhit.fbSingleItemManager.photoUrl);
+		// document.querySelector("#photo").innerHTML = `<img class="card-img-top"
+        //           data-src= ${item.photoUrl}
+        //           alt="The seller didn't post any pictues yet>`
+		// $("#isActive").attr("checked", rhit.fbSingleItemManager.isActive);
 		let slider = document.getElementById('choseItemRange');
 
 		noUiSlider.create(slider, {

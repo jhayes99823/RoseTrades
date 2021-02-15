@@ -39,7 +39,10 @@ rhit.ItemDetailPage = class {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
 		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
 		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
-
+		// console.log("photoURL=  ", item.photoUrl);
+		// document.querySelector("#photo").innerHTML = `<img class="card-img-top"
+        //           data-src= ${item.photoUrl}
+        //           alt="The seller didn't post any pictues yet>`
 		let slider = document.getElementById('choseItemRange');
 
 		noUiSlider.create(slider, {

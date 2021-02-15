@@ -1,3 +1,4 @@
+
 var rhit = rhit || {};
 
 rhit.AddItemPageController = class {
@@ -5,9 +6,25 @@ rhit.AddItemPageController = class {
 		console.log('im the add item page controller');
 
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
-
+		
 		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
+		});
+		document.querySelector("#addPhoto").addEventListener("click", (event) => {
+			console.log('upload photo pressed');
+			document.querySelector("#inputFile").click();
+			document.querySelector("#inputFile").addEventListener("change", (event) => {
+				const file = event.target.files[0];
+				console.log(`Received file named ${file.name}`);
+				const storageRef = firebase.storage().ref().child(file.name);
+				storageRef.put(file).then((UploadTaskSnapshot) => {
+					console.log('photo uploaded');
+
+					storageRef.getDownloadURL().then((downloadUrl) => {
+						rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl);
+					});
+				  });
+			});
 		});
 
 		let slider = document.getElementById('newItemRange');

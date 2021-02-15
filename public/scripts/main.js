@@ -1,3 +1,4 @@
+//import "firebase/storage"; //I don't know why adding firebasestorge on html doesn't work so i added it here
 /**
  * @fileoverview
  * Provides the JavaScript interactions for all pages.
@@ -37,6 +38,8 @@ rhit.FB_KEY_ISACTIVE = "isActive";
 rhit.FB_KEY_SELLER_NAME = "sellerName";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
+rhit.FB_ITEM_ID = "iid";
+rhit.FB_PHOTOURL = "photoUrl";
 
 /**
  * 
@@ -76,6 +79,7 @@ rhit.FB_KEY_MESSAGES = "messages";
 		this.description = description;
 		this.category = category;
 		this.priceRange = priceRange;
+		this.photoUrl = null;
 	}
  }
 
@@ -263,7 +267,8 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_PRICE]: priceRange,
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
 			[rhit.FB_KEY_SELLER_NAME]: sellerName,
-			[rhit.FB_KEY_ISACTIVE]: true
+			[rhit.FB_KEY_ISACTIVE]: true,
+			//[rhit.FB_PHOTO]: path,
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
 		  }).
@@ -289,6 +294,7 @@ rhit.FbUserItemManager = class {
 	get length() {
 		return this._documentSnapshots.length;
 	}
+
 
 	getItemAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
@@ -345,6 +351,7 @@ rhit.FbAllItemManager = class {
 
 rhit.FbSingleItemManager = class {
 	constructor(id) {
+		rhit.FB_ITEM_ID = id;
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase
@@ -398,9 +405,26 @@ rhit.FbSingleItemManager = class {
 		});
 	}
 
+	updatePhotoUrl(photoUrl){
+		this._ref.update({
+			[rhit.FB_PHOTOURL]: photoUrl,
+		}).then(() => {
+			console.log("photourl add successful");
+		}).catch(() => {
+			console.error("Error for adding photo", error)
+		});
+	}
+
 	delete() {
 		console.log("item successfully deleted!");
 		return this._ref.delete();
+	}
+
+	get photoUrl(){
+		return this._documentSnapshot.get(rhit.FB_PHOTOURL);
+	}
+	get id(){
+		return this._documentSnapshot.get(rhit.FB_ITEM_ID);
 	}
 
 	get seller(){
