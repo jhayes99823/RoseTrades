@@ -22,25 +22,23 @@ rhit.EditItemDetailController = class {
 			rhit.fbSingleItemManager.updateActiveStatus();
 		});
 
-		document.querySelector("#addPhoto").addEventListener("click", (event) => {
-			document.querySelector("#inputFile").click();
-			console.log(rhit.fbSingleItemManager.id);
-		});
+		// document.querySelector("#addPhoto").addEventListener("click", (event) => {
+		// 	document.querySelector("#inputFile").click();
+		// 	console.log(rhit.fbSingleItemManager.id);
+		// });
 
-		document.querySelector("#inputFile").addEventListener("change", (event) => {
-			const file = event.target.files[0];
-			console.log(`Received file named ${file.name}`);
-			const storageRef = firebase.storage().ref().child(rhit.fbSingleItemManager.id);
-			storageRef.put(file).then((UploadTaskSnapshot) => {
-				console.log('photo uploaded');
+		// document.querySelector("#inputFile").addEventListener("change", (event) => {
+		// 	const file = event.target.files[0];
+		// 	console.log(`Received file named ${file.name}`);
+		// 	const storageRef = firebase.storage().ref().child(rhit.fbSingleItemManager.id);
+		// 	storageRef.put(file).then((UploadTaskSnapshot) => {
+		// 		console.log('photo uploaded');
 
-				storageRef.getDownloadURL().then((downloadUrl) => {
-					rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl);
-				});
-			  });
-		});
-
-
+		// 		storageRef.getDownloadURL().then((downloadUrl) => {
+		// 			rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl);
+		// 		});
+		// 	  });
+		// });
 
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}
