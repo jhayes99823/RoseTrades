@@ -52,6 +52,7 @@ rhit.MainPageController = class {
 	}
 
 	_createCard(item) {
+		console.log('item info  ', item);
 		return htmlToElement(`
 		<div id="${item.id}" class="col-md-4 card-with-non-favorite">
               <div class="card mb-4 box-shadow" data-item-id="${item.id}">

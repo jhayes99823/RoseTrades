@@ -71,6 +71,7 @@ rhit.ItemDetailPage = class {
 		console.log("category", rhit.fbSingleItemManager.category);
 		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
 		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
+		console.log("photoUrl", rhit.fbSingleItemManager.photoUrl);
 
 		const favs = rhit.fbUserManager.favorites;
 		const favoriteIcon = document.querySelector("#favoritedContainer");

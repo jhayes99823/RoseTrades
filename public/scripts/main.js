@@ -350,7 +350,6 @@ rhit.FbAllItemManager = class {
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
 			this._documentSnapshots = querySnapshot.docs;
-			console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
 			changeListener();
 		});
 	}
@@ -454,8 +453,8 @@ rhit.FbSingleItemManager = class {
 	get photoUrl() {
 		return this._documentSnapshot.get(rhit.FB_PHOTOURL);
 	}
-	
-	get id(){
+
+	get id() {
 		return this._id;
 	}
 

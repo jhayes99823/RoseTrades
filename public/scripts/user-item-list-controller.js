@@ -41,7 +41,6 @@ rhit.MyItemPageController = class {
 	}
 
 	_createCard(item) {
-		console.log('item  ', item);
 		return htmlToElement(`
 		<div id = "${item.id}" class="col-md-4 detail-card">
               <div class="card mb-4 box-shadow">
