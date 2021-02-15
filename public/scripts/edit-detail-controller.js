@@ -1,5 +1,13 @@
 var rhit = rhit || {};
 
+ // From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
+ function htmlToElement(html) {
+	var template = document.createElement('template');
+	html = html.trim();
+	template.innerHTML = html;
+	return template.content.firstChild;
+}
+
 rhit.EditItemDetailController = class {
 	constructor(id) {
 		console.log('im the edit item detail page controller');
@@ -22,19 +30,40 @@ rhit.EditItemDetailController = class {
 			rhit.fbSingleItemManager.updateActiveStatus();
 		});
 
+		document.querySelector("#addPhoto").addEventListener("click", (event) => {
+			document.querySelector("#inputFile").click();
+			console.log(rhit.fbSingleItemManager.id);
+		});
+
+		document.querySelector("#inputFile").addEventListener("change", (event) => {
+			const file = event.target.files[0];
+			console.log(`Received file named ${file.name}`);
+			const storageRef = firebase.storage().ref().child(rhit.fbSingleItemManager.id);
+			storageRef.put(file).then((UploadTaskSnapshot) => {
+				console.log('photo uploaded');
+
+				storageRef.getDownloadURL().then((downloadUrl) => {
+					rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl);
+				});
+			  });
+		});
+
+
+
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}
-
+  
 
 	updateView() {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
 		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
 		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
-		 console.log("photoURL=  ", rhit.fbSingleItemManager.photoUrl);
-		// document.querySelector("#photo").innerHTML = `<img class="card-img-top"
-        //           data-src= ${item.photoUrl}
-        //           alt="The seller didn't post any pictues yet>`
-		// $("#isActive").attr("checked", rhit.fbSingleItemManager.isActive);
+		document.querySelector("#photo").innerHTML = htmlToElement(`<img
+		src= "${rhit.fbSingleItemManager.photoUrl}"
+		alt="The seller didn't post any pictues yet>`);
+
+
+		$("#isActive").attr("checked", rhit.fbSingleItemManager.isActive);
 		let slider = document.getElementById('choseItemRange');
 
 		noUiSlider.create(slider, {
@@ -72,6 +101,9 @@ rhit.EditItemDetailController = class {
 		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
 		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
 		console.log("is active ", rhit.fbSingleItemManager.isActive);
-
+		console.log("item id", rhit.fbSingleItemManager.id);
+		console.log("photoUrl  ", rhit.fbSingleItemManager.photoUrl);
 	}
+
 }
+

@@ -12,19 +12,23 @@ rhit.AddItemPageController = class {
 		});
 		document.querySelector("#addPhoto").addEventListener("click", (event) => {
 			console.log('upload photo pressed');
+			document.querySelector("#addItemBtn").click();
+			
 			document.querySelector("#inputFile").click();
-			document.querySelector("#inputFile").addEventListener("change", (event) => {
-				const file = event.target.files[0];
-				console.log(`Received file named ${file.name}`);
-				const storageRef = firebase.storage().ref().child(file.name);
-				storageRef.put(file).then((UploadTaskSnapshot) => {
-					console.log('photo uploaded');
+			console.log(rhit.fbSingleItemManager.id);
+		});
 
-					storageRef.getDownloadURL().then((downloadUrl) => {
-						rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl);
-					});
-				  });
-			});
+		document.querySelector("#inputFile").addEventListener("change", (event) => {
+			// const file = event.target.files[0];
+			// console.log(`Received file named ${file.name}`);
+			// const storageRef = firebase.storage().ref().child(rhit.FbUserItemManager.id);
+			// storageRef.put(file).then((UploadTaskSnapshot) => {
+			// 	console.log('photo uploaded');
+
+			// 	storageRef.getDownloadURL().then((downloadUrl) => {
+			// 		rhit.FbUserItemManager.updatePhotoUrl(downloadUrl);
+			// 	});
+			//   });
 		});
 
 		let slider = document.getElementById('newItemRange');

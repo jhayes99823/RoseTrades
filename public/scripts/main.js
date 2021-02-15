@@ -38,7 +38,6 @@ rhit.FB_KEY_ISACTIVE = "isActive";
 rhit.FB_KEY_SELLER_NAME = "sellerName";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
-rhit.FB_ITEM_ID = "iid";
 rhit.FB_PHOTOURL = "photoUrl";
 
 /**
@@ -268,12 +267,12 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
 			[rhit.FB_KEY_SELLER_NAME]: sellerName,
 			[rhit.FB_KEY_ISACTIVE]: true,
-			//[rhit.FB_PHOTO]: path,
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
+			window.location.href = `/edit-item-detail.html?id=${docRef.id}`;
 		  }).
 		  then(() => {
-			window.location.href = '/my-item.html';
+			
 		  })
 		  .catch(function (error) {
 			console.error("Error adding document: ", error);
@@ -294,6 +293,11 @@ rhit.FbUserItemManager = class {
 	get length() {
 		return this._documentSnapshots.length;
 	}
+
+	get id(){
+		return this._id;
+	}
+
 
 
 	getItemAtIndex(index) {
@@ -351,7 +355,7 @@ rhit.FbAllItemManager = class {
 
 rhit.FbSingleItemManager = class {
 	constructor(id) {
-		rhit.FB_ITEM_ID = id;
+		this._id = id;
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase
@@ -388,6 +392,16 @@ rhit.FbSingleItemManager = class {
 		this._unsubscribe();
 	}
 
+	updatePhotoUrl(photoUrl){
+		this._ref.update({
+			[rhit.FB_PHOTOURL]: photoUrl,
+		}).then(() => {
+			console.log("photourl add successful");
+		}).catch(() => {
+			console.error("Error for adding photo", error)
+		});
+	}
+	
 	update(name, description, priceRange, category) {
 		this._ref.update({
 			[rhit.FB_KEY_CATEGORY] : category,
@@ -405,15 +419,7 @@ rhit.FbSingleItemManager = class {
 		});
 	}
 
-	updatePhotoUrl(photoUrl){
-		this._ref.update({
-			[rhit.FB_PHOTOURL]: photoUrl,
-		}).then(() => {
-			console.log("photourl add successful");
-		}).catch(() => {
-			console.error("Error for adding photo", error)
-		});
-	}
+	
 
 	delete() {
 		console.log("item successfully deleted!");
@@ -424,7 +430,7 @@ rhit.FbSingleItemManager = class {
 		return this._documentSnapshot.get(rhit.FB_PHOTOURL);
 	}
 	get id(){
-		return this._documentSnapshot.get(rhit.FB_ITEM_ID);
+		return this._id;
 	}
 
 	get seller(){
