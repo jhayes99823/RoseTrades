@@ -426,15 +426,30 @@ rhit.FbSingleItemManager = class {
 		});
 	}
 
-	update(name, description, priceRange, category) {
+	update(name, description, priceRange, category, file) {
 		this._ref.update({
 			[rhit.FB_KEY_CATEGORY] : category,
 			[rhit.FB_KEY_ITEM_NAME] : name,
 			[rhit.FB_KEY_DESCRIPTION] : description,
 			[rhit.FB_KEY_PRICE] : priceRange,
+			[rhit.FB_PHOTOURL]: "",
 		}).then(() => {
+			this._storageRef = firebase.storage().ref().child(this._id);
+			return this._storageRef.put(file);
+			
+		}).then((UploadTaskSnapshot) => {
+			return this._storageRef.getDownloadURL();
+		  }).
+		  then((downloadUrl) => {
+				this.updatePhotoUrl(downloadUrl);
+		  }).
+		  then(() => {
+			window.location.href = '/my-item.html';
 			console.log("item has been updated");
-		});
+		  })
+		  .catch(function (error) {
+			console.error("Error adding document: ", error);
+		  });;
 	}
 
 	updateActiveStatus() {
