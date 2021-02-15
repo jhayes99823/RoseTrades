@@ -183,6 +183,15 @@ html {
     z-index: 999;
 }
 
+#deleteItemBtn {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    background: #ff4d00;
+    color: white;
+    z-index: 999;
+}
+
 #addItemBtn:active {
     transform: translateY(2px);
     opacity: 0.8;

@@ -1,3 +1,4 @@
+//import "firebase/storage"; //I don't know why adding firebasestorge on html doesn't work so i added it here
 /**
  * @fileoverview
  * Provides the JavaScript interactions for all pages.
@@ -39,6 +40,7 @@ rhit.FB_KEY_ISACTIVE = "isActive";
 rhit.FB_KEY_SELLER_NAME = "sellerName";
 
 rhit.FB_KEY_SCHEDULE = "schedule";
+rhit.FB_PHOTOURL = "photoUrl";
 
 /**
  * 
@@ -72,12 +74,14 @@ rhit.FB_KEY_MESSAGES = "messages";
  */
 
  rhit.Item = class {
-	constructor(id, name, description, category, priceRange) {
+	constructor(id, name, description, category, priceRange, isActive, photoUrl) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.category = category;
 		this.priceRange = priceRange;
+		this.isActive = isActive;
+		this.photoUrl = photoUrl;
 	}
  }
 
@@ -251,10 +255,12 @@ rhit.FbUserItemManager = class {
 	constructor() {
 		this.documents = [];
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_ITEMS);
+		this._storageRef = null;
+		this._newItemId = null;
     	this._unsubscribe = null;
 	}
 
-	add(name, description, priceRange, category, sellerName) {
+	add(name, description, priceRange, category, sellerName, file) {
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
@@ -262,9 +268,23 @@ rhit.FbUserItemManager = class {
 			[rhit.FB_KEY_PRICE]: priceRange,
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
 			[rhit.FB_KEY_SELLER_NAME]: sellerName,
-			[rhit.FB_KEY_ISACTIVE]: true
-		}).then(function (docRef) {
+			[rhit.FB_KEY_ISACTIVE]: true,
+			[rhit.FB_PHOTOURL]: "",
+		}).then((docRef) => {
 			console.log("Document written in ID: ", docRef.id);
+			return docRef.id;
+		  }).
+		  then((id) => {
+			this._newItemId = id;
+			this._storageRef = firebase.storage().ref().child(id);
+			return this._storageRef.put(file);
+		  }).
+		  then((UploadTaskSnapshot) => {
+			return this._storageRef.getDownloadURL();
+		  }).
+		  then((downloadUrl) => {
+			rhit.fbSingleItemManager = new rhit.FbSingleItemManager(this._newItemId);
+			rhit.fbSingleItemManager.updatePhotoUrl(downloadUrl)
 		  }).
 		  then(() => {
 			window.location.href = '/my-item.html';
@@ -289,6 +309,12 @@ rhit.FbUserItemManager = class {
 		return this._documentSnapshots.length;
 	}
 
+	get id(){
+		return this._id;
+	}
+
+
+
 	getItemAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
 		const item = new rhit.Item(
@@ -298,6 +324,7 @@ rhit.FbUserItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
 		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
+		  docSnapshot.get(rhit.FB_PHOTOURL)
 		);
 		return item;
 	  }
@@ -318,13 +345,11 @@ rhit.FbAllItemManager = class {
 						.where(rhit.FB_KEY_ISACTIVE, "==", true);
 						
 		if (category != '') {
-			console.log('made it here  ', category);
 			query = query.where(rhit.FB_KEY_CATEGORY, '==', rhit.FbAllItemManager.CATEGORIES[category - 1]);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
 			this._documentSnapshots = querySnapshot.docs;
-			console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
 			changeListener();
 		});
 	}
@@ -345,7 +370,8 @@ rhit.FbAllItemManager = class {
 		  docSnapshot.get(rhit.FB_KEY_DESCRIPTION),
 		  docSnapshot.get(rhit.FB_KEY_CATEGORY),
 		  docSnapshot.get(rhit.FB_KEY_PRICE),
-		  docSnapshot.get(rhit.FB_KEY_ISACTIVE)
+		  docSnapshot.get(rhit.FB_KEY_ISACTIVE),
+		  docSnapshot.get(rhit.FB_PHOTOURL)
 		);
 		return item;
 	}
@@ -353,6 +379,7 @@ rhit.FbAllItemManager = class {
 
 rhit.FbSingleItemManager = class {
 	constructor(id) {
+		this._id = id;
 		this._documentSnapshot = {};
 		this._unsubscribe = null;
 		this._ref = firebase
@@ -389,6 +416,16 @@ rhit.FbSingleItemManager = class {
 		this._unsubscribe();
 	}
 
+	updatePhotoUrl(photoUrl){
+		this._ref.update({
+			[rhit.FB_PHOTOURL]: photoUrl,
+		}).then(() => {
+			console.log("photourl add successful");
+		}).catch(() => {
+			console.error("Error for adding photo", error)
+		});
+	}
+
 	update(name, description, priceRange, category) {
 		this._ref.update({
 			[rhit.FB_KEY_CATEGORY] : category,
@@ -406,9 +443,19 @@ rhit.FbSingleItemManager = class {
 		});
 	}
 
+	
+
 	delete() {
 		console.log("item successfully deleted!");
 		return this._ref.delete();
+	}
+
+	get photoUrl() {
+		return this._documentSnapshot.get(rhit.FB_PHOTOURL);
+	}
+
+	get id() {
+		return this._id;
 	}
 
 	get seller(){
@@ -500,6 +547,11 @@ rhit.FbChatsManager = class {
 		.catch(function (error) {
 			console.error("Error updating document: ", error);
 		});
+	}
+
+	delete() {
+		console.log("item successfully DELETED");
+		return this._ref.delete();
 	}
 }
 

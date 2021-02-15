@@ -1,11 +1,31 @@
+
 var rhit = rhit || {};
 
 rhit.AddItemPageController = class {
 	constructor() {
 		console.log('im the add item page controller');
 
+		this._currFile = null;
+
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
-		
+	
+		document.querySelector("#addPhoto").addEventListener("click", (event) => {
+			console.log('upload photo pressed');
+			document.querySelector("#inputFile").click();
+		});
+
+					
+		document.querySelector("#inputFile").addEventListener("change", (event) => {
+			this._currFile = event.target.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#photo').attr('src', e.target.result);
+			}
+
+			reader.readAsDataURL(event.target.files[0]);
+			console.log(`Received file named ${this._currFile.name}`);
+		});
+
 		let slider = document.getElementById('newItemRange');
 
 		noUiSlider.create(slider, {
@@ -38,9 +58,9 @@ rhit.AddItemPageController = class {
 				high: slider.noUiSlider.get()[1]
 			};
 			
-			console.log(name, description, category, priceRange, rhit.fbUserManager.name);
+			console.log(name, description, category, priceRange, rhit.fbUserManager.name, this._currFile);
 
-			rhit.fbUserItemManager.add(name, description, priceRange, category, rhit.fbUserManager.name);
+			rhit.fbUserItemManager.add(name, description, priceRange, category, rhit.fbUserManager.name, this._currFile);
 		});
 	}
 
