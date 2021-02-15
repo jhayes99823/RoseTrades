@@ -2,11 +2,22 @@ var rhit = rhit || {};
 
 rhit.MainPageController = class {
 	constructor() {
-		console.log('im the main page controller')
+		console.log('im the main page controller');
 
-		document.querySelector("#logout").onclick = (event) => {
-			rhit.fbAuthManager.signOut();
-		}
+		document.querySelector("#submitFilterOptions").addEventListener("click", (event) => {
+			let category = document.querySelector("#itemCategory").value;
+			category = (category == 0) ? 1 : category; 
+			rhit.fbAllItemManager.beginListening(this.updateList.bind(this), category);
+
+			document.querySelector("#itemCategory").value = 0;
+
+			$("#removeFilterBtn").attr('hidden', false);
+		});
+
+		document.querySelector("#removeFilterBtn").addEventListener('click', (event) => {
+			$("#removeFilterBtn").attr('hidden', true);
+			rhit.fbAllItemManager.beginListening(this.updateList.bind(this));
+		});
 
 		rhit.fbAllItemManager.beginListening(this.updateList.bind(this));
 	}
