@@ -548,6 +548,11 @@ rhit.FbChatsManager = class {
 			console.error("Error updating document: ", error);
 		});
 	}
+
+	delete() {
+		console.log("item successfully DELETED");
+		return this._ref.delete();
+	}
 }
 
 /**

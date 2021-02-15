@@ -22,6 +22,13 @@ rhit.EditItemDetailController = class {
 			rhit.fbSingleItemManager.updateActiveStatus();
 		});
 
+		document.querySelector("#deleteItemBtn").onclick = (event) => {
+			console.log("delete button pressed");
+			rhit.fbSingleItemManager.delete().then((event) => {
+				window.location.href = "/my-item.html";
+			});
+		}
+
 		// document.querySelector("#addPhoto").addEventListener("click", (event) => {
 		// 	document.querySelector("#inputFile").click();
 		// 	console.log(rhit.fbSingleItemManager.id);
