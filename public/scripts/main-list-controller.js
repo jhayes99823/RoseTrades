@@ -4,10 +4,6 @@ rhit.MainPageController = class {
 	constructor() {
 		console.log('im the main page controller')
 
-		document.querySelector("#logout").onclick = (event) => {
-			rhit.fbAuthManager.signOut();
-		}
-
 		rhit.fbAllItemManager.beginListening(this.updateList.bind(this));
 	}
 
