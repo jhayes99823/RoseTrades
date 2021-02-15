@@ -316,9 +316,7 @@ rhit.FbAllItemManager = class {
 		let query = this._ref
 						.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid)
 						.where(rhit.FB_KEY_ISACTIVE, "==", true);
-						// .where(`${rhit.FB_KEY_PRICE}.low`, '>=' , low)
-						// .where(`${rhit.FB_KEY_PRICE}.high`, '==' , high);
-
+						
 		if (category != '') {
 			console.log('made it here  ', category);
 			query = query.where(rhit.FB_KEY_CATEGORY, '==', rhit.FbAllItemManager.CATEGORIES[category - 1]);
