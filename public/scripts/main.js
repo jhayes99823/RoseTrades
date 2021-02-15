@@ -401,7 +401,7 @@ rhit.FbSingleItemManager = class {
 			console.error("Error for adding photo", error)
 		});
 	}
-	
+
 	update(name, description, priceRange, category) {
 		this._ref.update({
 			[rhit.FB_KEY_CATEGORY] : category,

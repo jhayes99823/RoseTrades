@@ -1,13 +1,5 @@
 var rhit = rhit || {};
 
- // From: https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
- function htmlToElement(html) {
-	var template = document.createElement('template');
-	html = html.trim();
-	template.innerHTML = html;
-	return template.content.firstChild;
-}
-
 rhit.EditItemDetailController = class {
 	constructor(id) {
 		console.log('im the edit item detail page controller');
@@ -58,9 +50,8 @@ rhit.EditItemDetailController = class {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
 		document.querySelector("#choseItemDescription").value = rhit.fbSingleItemManager.description;
 		document.querySelector("#choseItemCategory").value = rhit.fbSingleItemManager.category;
-		document.querySelector("#photo").innerHTML = htmlToElement(`<img
-		src= "${rhit.fbSingleItemManager.photoUrl}"
-		alt="The seller didn't post any pictues yet>`);
+		document.querySelector("#photo").src= rhit.fbSingleItemManager.photoUrl;
+		
 
 
 		$("#isActive").attr("checked", rhit.fbSingleItemManager.isActive);
