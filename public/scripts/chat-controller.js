@@ -5,8 +5,6 @@ rhit.ChatPageController = class {
         console.log('i am the chat controller page');
         rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 
-        console.log('sender  ', sender, '  receiver  ', receiever, '    name   ', receieverName);
-
         this._sender = sender;
         this._receiver = receiever;
         this._receiverName = receieverName;
@@ -16,19 +14,15 @@ rhit.ChatPageController = class {
 
         messageInput.addEventListener("keypress", (event) => {
             if (event.key === 'Enter') {
-                if (this._currChatIndex > -1) {
-                    console.log('enter key pressed');
+                if (this._currChatIndex > -1 && (messageInput.value != '' || messageInput.value != ' ')) {
                     let chat = rhit.fbChatsManager.getItemAtIndex(this._currChatIndex);
-                    console.log('chat   ', chat);
                     chat.messages.push({
                         message: messageInput.value,
                         sender: this._sender
                     });
-                    console.log('chat   ', chat);
                     rhit.fbChatsManager.update(chat);
                     messageInput.value = "";
                 } else {
-                    console.log('made it here    ', this._receiverName);
                     rhit.fbChatsManager.addNewChatString([{"username": this._sender, "name": rhit.fbUserManager.name}, {"username": this._receiver, "name": this._receiverName}], [{message: messageInput.value, sender: this._sender}]);
                     messageInput.value = "";
                 }
@@ -36,7 +30,7 @@ rhit.ChatPageController = class {
         });
 
         document.querySelector("#enterBtn").addEventListener('click', (event) => {
-            if (this._currChatIndex > -1) {
+            if (this._currChatIndex > -1 && messageInput.value != "") {
                 let chat = rhit.fbChatsManager.getItemAtIndex(this._currChatIndex);
                 chat.messages.push({
                     message: messageInput.value,
@@ -55,7 +49,6 @@ rhit.ChatPageController = class {
 
     search(nameKey, myArray){
 		for (let i = 0; i < myArray.length; i++) {
-            console.log('here  ', myArray[i].username,  '    ', nameKey);
 			if (myArray[i].username === nameKey) {
 				return i;
 			}
@@ -70,24 +63,11 @@ rhit.ChatPageController = class {
         for (let i = 0; i < rhit.fbChatsManager.length; i++) {
             let chat = rhit.fbChatsManager.getItemAtIndex(i);
 
-            console.log('curr chat  ', chat);
-
-            console.log('sender  ', this._sender, '  receiver  ', this._receiver);
-
-            console.log('receiver index   ', this.search(this._receiver, chat.people));
-            console.log('sender index     ', this.search(this._sender, chat.people));
-
-            console.log('find the index   ', (this.search(this._sender, chat.people) > -1) && (this.search(this._receiver, chat.people) > -1), '     ', i);
-
             if (((this.search(this._sender, chat.people) > -1) && (this.search(this._receiver, chat.people) > -1)) == true) {
                 this._currChatIndex = i;
-                console.log('curr chat   ', i);
                 for (let message of chat.messages) {
                     let messageCard = null;
-                    console.log('made it here  ', message.sender);
-
                     if (message.sender == this._sender) {
-                        console.log('made it here  ', message.sender);
                         messageCard = this._createSenderCard(message.message)
                     } else {
                         messageCard = this._createReceiverCard(message.message);

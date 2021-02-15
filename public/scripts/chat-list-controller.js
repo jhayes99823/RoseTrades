@@ -11,17 +11,18 @@ rhit.ChatListPageController = class {
 
         for (let i = 0; i < rhit.fbChatsManager.length; i++) {
             const chat = rhit.fbChatsManager.getItemAtIndex(i);
-            
-            const chatListCard = this._createCardList(chat);
-            const userName = this.search(rhit.fbAuthManager.uid, chat.people);
-            const receiverName = chat.people[userName.user.index == 0 ? 1 : 0];
-                console.log('username   ', userName);
-                console.log('receiver name  ', receiverName);
-            chatListCard.onclick = (event) => {        
-                window.location.href = `/chat.html?sender=${receiverName.username}&receiver=${userName.user.username}&receiverName=${userName.user.name}`;
-            };
 
-            newList.appendChild(chatListCard);
+            if (this.searchIndex(rhit.fbAuthManager.uid, chat.people) > -1) {
+                const chatListCard = this._createCardList(chat);
+                const userName = this.search(rhit.fbAuthManager.uid, chat.people);
+                let otherPersonIndex = (userName.index == 0) ? 1 : 0;
+                const receiverName = chat.people[otherPersonIndex];
+                chatListCard.onclick = (event) => {        
+                    window.location.href = `/chat.html?sender=${receiverName.username}&receiver=${userName.user.username}&receiverName=${userName.user.name}`;
+                };
+    
+                newList.appendChild(chatListCard);
+            }
         }
 
         const oldList = document.querySelector("#chats-list");
@@ -46,11 +47,20 @@ rhit.ChatListPageController = class {
 				return myArray[i];
 			}
 		}
-	}
+    }
+    
+    searchIndex(key, arr) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].username === key) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 
     _createCardList(message) {
         const userName = this.search(rhit.fbAuthManager.uid, message.people);
-        console.log('username  ', userName);
         return htmlToElement(
             `
             <div class="list-group-item list-group-item-action flex-column align-items-start active chat-list-container">

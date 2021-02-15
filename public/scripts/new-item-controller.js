@@ -5,11 +5,7 @@ rhit.AddItemPageController = class {
 		console.log('im the add item page controller');
 
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
-
-		document.querySelector("#logout").addEventListener("click", (event) => {
-			rhit.fbAuthManager.signOut();
-		});
-
+		
 		let slider = document.getElementById('newItemRange');
 
 		noUiSlider.create(slider, {
@@ -30,11 +26,7 @@ rhit.AddItemPageController = class {
 					}
 				}
 		});
-
-		slider.noUiSlider.on('change', function () { 
-			console.log(slider.noUiSlider.get());
-		});
-
+		
 		mergeTooltips(slider, 15, ' - ');
 
 		document.querySelector("#addItemBtn").addEventListener("click", (event) => {

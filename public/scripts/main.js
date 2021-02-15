@@ -9,6 +9,8 @@
 /** namespace. */
 var rhit = rhit || {};
 
+rhit.PAGES = ['home', 'account', 'chats', 'favorites', 'my_items', 'appointments'];
+rhit.CURR_PAGE_INDEX = 0;
 rhit.ROSEFIRE_REGISTRY_TOKEN = "b64b1811-556e-4087-a51b-49e2e7b0c2d7";
 
 /**
@@ -235,12 +237,10 @@ rhit.FbUserManager = class {
 	}
 
 	get name() {
-		console.log('mt name  ', this._document.get(rhit.FB_KEY_NAME));
 		return this._document.get(rhit.FB_KEY_NAME);
 	}
 
 	get favorites() {
-		console.log('here   ', this._document);
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
 }
@@ -255,7 +255,6 @@ rhit.FbUserItemManager = class {
 	}
 
 	add(name, description, priceRange, category, sellerName) {
-		console.log('seller name  ', rhit.fbAuthManager.name);
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
 			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
@@ -313,17 +312,26 @@ rhit.FbAllItemManager = class {
     	this._unsubscribe = null;
 	}
 
-	beginListening(changeListener) {
-		this._unsubscribe = this._ref.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid).where(rhit.FB_KEY_ISACTIVE, "==", true).onSnapshot((querySnapshot) => {
-		  this._documentSnapshots = querySnapshot.docs;
-		  console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
-		  changeListener();
+	beginListening(changeListener, category = '') {
+		let query = this._ref
+						.where(rhit.FB_KEY_SELLER, '!=', rhit.fbAuthManager.uid)
+						.where(rhit.FB_KEY_ISACTIVE, "==", true);
+						
+		if (category != '') {
+			console.log('made it here  ', category);
+			query = query.where(rhit.FB_KEY_CATEGORY, '==', rhit.FbAllItemManager.CATEGORIES[category - 1]);
+		}
+
+		this._unsubscribe = query.onSnapshot((querySnapshot) => {
+			this._documentSnapshots = querySnapshot.docs;
+			console.log("FB ALL MANAGER DOC: ", querySnapshot.docs);
+			changeListener();
 		});
-	  }
+	}
 	
-	  stopListening() {
+	stopListening() {
 		this._unsubscribe();
-	  }
+	}
 
 	get length() {
 		return this._documentSnapshots.length;
@@ -448,7 +456,6 @@ rhit.FbChatsManager = class {
 	}
 
 	addNewChatString(people, messages) {
-		console.log('people  ', people, '   messages  ', messages);
 		this._ref.add({
 			[rhit.FB_KEY_PEOPLE]: people,
 			[rhit.FB_KEY_MESSAGES]: messages
@@ -461,7 +468,6 @@ rhit.FbChatsManager = class {
 
 	beginListening(changeListener) {
 		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
-			console.log('chats manager begin   ', querySnapshot);
 			this._documentSnapshots = querySnapshot.docs;
 			changeListener();
 		});
@@ -509,9 +515,25 @@ rhit.LoginPageController = class {
 	constructor() {
 		console.log('im the login page controller')
 		document.querySelector("#loginButton").onclick = (event) => {
-			console.log('made it here');
 		  rhit.fbAuthManager.signIn();
 		}
+	}
+}
+
+rhit.NavBarController = class {
+	constructor(newTab) {
+		document.querySelector("#logout").addEventListener("click", (event) => {
+			rhit.fbAuthManager.signOut();
+		});
+		
+		console.log('newTab   ', newTab);
+		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
+		$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).removeClass('active');
+		rhit.CURR_PAGE_INDEX = rhit.PAGES.indexOf(newTab);
+		if (rhit.CURR_PAGE_INDEX > -1) {
+			$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).addClass('active');
+		}
+		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
 	}
 }
 
@@ -655,6 +677,7 @@ rhit.initializePage = function () {
 	if (document.querySelector("#mainList")) {
 		console.log("You are on the list page.");
 		const uid = urlParams.get("uid");
+		new rhit.NavBarController('home');
 		rhit.fbAllItemManager = new rhit.FbAllItemManager();
 		new rhit.MainPageController(uid);
 	}
@@ -666,17 +689,20 @@ rhit.initializePage = function () {
 
 	if (document.querySelector("#accountPage")) {
 		console.log('You are on the account page');
+		new rhit.NavBarController('account');
 		new rhit.AccountPageController();
 	}
 
 	if (document.querySelector("#myItemsPage")) {
 		console.log('You are on the my items page');
+		new rhit.NavBarController('my_items');
 		rhit.fbUserItemManager = new rhit.FbUserItemManager();
 		new rhit.MyItemPageController();
 	}
 
 	if (document.querySelector("#newItemPage")) {
 		console.log('You are on the new item page');
+		new rhit.NavBarController('my_items');
 		rhit.fbUserItemManager = new rhit.FbUserItemManager();
 		new rhit.AddItemPageController();
 	}
@@ -684,6 +710,7 @@ rhit.initializePage = function () {
 	if (document.querySelector("#itemDetailPage")) {
 		console.log('You are on the item detail page');
 		const id = urlParams.get("id");
+		new rhit.NavBarController('');
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
 		new rhit.ItemDetailPage(id);
 	}
@@ -691,27 +718,30 @@ rhit.initializePage = function () {
 	if (document.querySelector("#editItemDetailPage")) {
 		console.log('You are on the item detail page');
 		const id = urlParams.get("id");
+		new rhit.NavBarController('');
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
 		new rhit.EditItemDetailController(id);
 	}
 
 	if (document.querySelector("#favoritesPage")) {
+		new rhit.NavBarController('favorites');
 		console.log('You are on the favorites page');
 		new rhit.FavoritesPageController();
 	}
 
 	if (document.querySelector("#chatListPage")) {
+		new rhit.NavBarController('chats');
 		console.log('You are on the chat list page');
 		rhit.fbChatsManager = new rhit.FbChatsManager();
 		new rhit.ChatListPageController();
 	}
 
 	if (document.querySelector("#chatPage")) {
+		new rhit.NavBarController('');
 		console.log('You are on the chat page');
 		const senderUID = urlParams.get("sender");
 		const receiverUID = urlParams.get('receiver');
 		const receiverName = urlParams.get('receiverName');
-		console.log('receiverName', receiverName);
 		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
 		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
 	}
