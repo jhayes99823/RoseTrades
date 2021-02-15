@@ -11,13 +11,19 @@ rhit.AddItemPageController = class {
 	
 		document.querySelector("#addPhoto").addEventListener("click", (event) => {
 			console.log('upload photo pressed');
-			document.querySelector("#addItemBtn").click();
-			
 			document.querySelector("#inputFile").click();
-			document.querySelector("#inputFile").addEventListener("change", (event) => {
-				this._currFile = event.target.files[0];
-				console.log(`Received file named ${this._currFile.name}`);
-			});
+		});
+
+					
+		document.querySelector("#inputFile").addEventListener("change", (event) => {
+			this._currFile = event.target.files[0];
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#photo').attr('src', e.target.result);
+			}
+
+			reader.readAsDataURL(event.target.files[0]);
+			console.log(`Received file named ${this._currFile.name}`);
 		});
 
 		let slider = document.getElementById('newItemRange');
