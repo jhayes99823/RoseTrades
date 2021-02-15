@@ -11,6 +11,8 @@ rhit.AddItemPageController = class {
 	
 		document.querySelector("#addPhoto").addEventListener("click", (event) => {
 			console.log('upload photo pressed');
+			document.querySelector("#addItemBtn").click();
+			
 			document.querySelector("#inputFile").click();
 			document.querySelector("#inputFile").addEventListener("change", (event) => {
 				this._currFile = event.target.files[0];
