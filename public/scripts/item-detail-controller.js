@@ -14,6 +14,10 @@ rhit.ItemDetailPage = class {
 			window.location.href = `/chat.html?sender=${rhit.fbAuthManager.uid}&receiver=${rhit.fbSingleItemManager.seller}&receiverName=${rhit.fbSingleItemManager.sellerName}`
 		});
 
+		document.querySelector("#helpIcon").addEventListener('mouseover', (event) => {
+			$('#helpIcon').tooltip('show')
+		});
+
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}
@@ -65,6 +69,20 @@ rhit.ItemDetailPage = class {
 
 		mergeTooltips(slider, 15, ' - ');
 		slider.style.marginTop = "70px";
+
+		const bidAmount = document.querySelector("#bidInput");
+		const meetingDate = document.querySelector("#meetingDate");
+		const meetingTime = document.querySelector("#meetingTime");
+		const meetingPlace = document.querySelector("#meetingPlace");
+		const submit = document.querySelector("#submitMeeting");
+
+		$("#requestMeeting").on('show.bs.modal', (event) => {
+			bidAmount.value = rhit.fbSingleItemManager.priceRange.high;
+		});
+
+		submit.addEventListener('click', (event) => {
+			console.log(bidAmount.value, ' ', meetingDate.value, ' ', meetingTime.value, ' ', meetingPlace.value);
+		});
 
 		console.log("name ", rhit.fbSingleItemManager.name);
 		console.log("description", rhit.fbSingleItemManager.description);
