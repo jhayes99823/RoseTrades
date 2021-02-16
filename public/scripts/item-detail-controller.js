@@ -70,6 +70,16 @@ rhit.ItemDetailPage = class {
 		mergeTooltips(slider, 15, ' - ');
 		slider.style.marginTop = "70px";
 
+		const warningIcon = document.querySelector("#warningContainer");
+
+		warningIcon.addEventListener('mouseover', (event) => {
+			$('#warningContainer').tooltip('show')
+		});
+
+		if (!rhit.fbSingleItemManager.isActive) {
+			$("#warningContainer").attr('hidden', false);
+		}
+
 		const bidAmount = document.querySelector("#bidInput");
 		const meetingDate = document.querySelector("#meetingDate");
 		const meetingTime = document.querySelector("#meetingTime");
@@ -90,6 +100,7 @@ rhit.ItemDetailPage = class {
 		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
 		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
 		console.log("photoUrl", rhit.fbSingleItemManager.photoUrl);
+		console.log("isActive", rhit.fbSingleItemManager.isActive);
 
 		const favs = rhit.fbUserManager.favorites;
 		const favoriteIcon = document.querySelector("#favoritedContainer");
