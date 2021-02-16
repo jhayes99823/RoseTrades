@@ -38,6 +38,15 @@ rhit.ItemDetailPage = class {
 		}
 	}
 
+	_makeMeetingDetailObj(bidAmount, meetingPlace, meetingDate, meetingTime) {
+		return {
+			bidAmount,
+			meetingPlace,
+			meetingDate,
+			meetingTime
+		};
+	}
+
 
 	updateView() {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
@@ -92,6 +101,19 @@ rhit.ItemDetailPage = class {
 
 		submit.addEventListener('click', (event) => {
 			console.log(bidAmount.value, ' ', meetingDate.value, ' ', meetingTime.value, ' ', meetingPlace.value);
+			const meetingDetails = this._makeMeetingDetailObj(bidAmount.value, meetingPlace.value, meetingDate.value, meetingTime.value);
+			const requester = {
+				username: rhit.fbAuthManager.uid,
+				name: rhit.fbUserManager.name
+			};
+
+			const requestee = {
+				username: rhit.fbSingleItemManager.seller,
+				name: rhit.fbSingleItemManager.sellerName
+			};
+
+			rhit.fbAppointmentManager.newProposal(requestee, requester, meetingDetails);
+			$("#success").snackbar("toggle");
 		});
 
 		console.log("name ", rhit.fbSingleItemManager.name);

@@ -53,6 +53,7 @@ rhit.fbUserItemManager = null;
 rhit.fbAllItemManager = null
 rhit.fbSingleItemManager = null;
 rhit.fbChatsManager = null;
+rhit.fbAppointmentManager = null;
 
 /**
  * 
@@ -64,6 +65,21 @@ rhit.fbChatsManager = null;
 rhit.FB_COLLECITON_CHATS = "chats";
 rhit.FB_KEY_PEOPLE = "people";
 rhit.FB_KEY_MESSAGES = "messages";
+
+/**
+ * 
+ * 
+ * APPOINTMENT COLLECTION VARIABLES
+ * 
+ * 
+ */
+
+rhit.FB_COLLECTION_APPOINTMENTS = 'appointments';
+rhit.FB_KEY_USER_REQUESTED = 'requestee';
+rhit.FB_KEY_REQUESTER = 'requester';
+rhit.FB_KEY_PROPOSALS = 'proposals';
+rhit.FB_KEY_ITEM_ID = 'itemID';
+rhit.FB_KEY_MEETING_DETAILS = 'meetingDetails';
 
 /**
  * 
@@ -581,6 +597,28 @@ rhit.FbChatsManager = class {
 	}
 }
 
+rhit.FbAppointmentManager = class {
+	constructor(itemID) {
+		this._itemID = itemID;
+		this._documentSnapshots = [];
+		this._unsubscribe = null;
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_APPOINTMENTS);		
+	}
+
+	newProposal(requestee, requester, meetinDetails) {
+		this._ref.add({
+			[rhit.FB_KEY_ITEM_ID]: this._itemID,
+			[rhit.FB_KEY_REQUESTER]: requester,
+			[rhit.FB_KEY_USER_REQUESTED]: requestee,
+			[rhit.FB_KEY_PROPOSALS]: [meetinDetails]
+		}).then(function (docRef) {
+			console.log("Document written in ID: ", docRef.id);
+		}).catch((error) => {
+			console.log("Error getting document: ", error);
+		});
+	}
+}
+
 /**
  * 
  * 
@@ -790,6 +828,7 @@ rhit.initializePage = function () {
 		const id = urlParams.get("id");
 		new rhit.NavBarController('');
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
+		rhit.fbAppointmentManager = new rhit.FbAppointmentManager(id);
 		new rhit.ItemDetailPage(id);
 	}
 
