@@ -14,6 +14,10 @@ rhit.ItemDetailPage = class {
 			window.location.href = `/chat.html?sender=${rhit.fbAuthManager.uid}&receiver=${rhit.fbSingleItemManager.seller}&receiverName=${rhit.fbSingleItemManager.sellerName}`
 		});
 
+		document.querySelector("#helpIcon").addEventListener('mouseover', (event) => {
+			$('#helpIcon').tooltip('show')
+		});
+
 		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
 		rhit.fbSingleItemManager.beginListening(this.updateView.bind(this));	
 	}
@@ -34,6 +38,29 @@ rhit.ItemDetailPage = class {
 		}
 	}
 
+	_makeMeetingDetailObj(bidAmount, meetingPlace, meetingDate, meetingTime) {
+		return {
+			bidAmount,
+			meetingPlace,
+			meetingDate,
+			meetingTime
+		};
+	}
+
+	_makeUserObj(username, name) {
+		return {
+			username,
+			name
+		};
+	}
+
+	_makeItemObj(id, name, photoURL) {
+		return {
+			id,
+			name,
+			photoURL
+		};
+	}
 
 	updateView() {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
@@ -66,12 +93,45 @@ rhit.ItemDetailPage = class {
 		mergeTooltips(slider, 15, ' - ');
 		slider.style.marginTop = "70px";
 
+		const warningIcon = document.querySelector("#warningContainer");
+
+		warningIcon.addEventListener('mouseover', (event) => {
+			$('#warningContainer').tooltip('show')
+		});
+
+		if (!rhit.fbSingleItemManager.isActive) {
+			$("#warningContainer").attr('hidden', false);
+		}
+
+		const bidAmount = document.querySelector("#bidInput");
+		const meetingDate = document.querySelector("#meetingDate");
+		const meetingTime = document.querySelector("#meetingTime");
+		const meetingPlace = document.querySelector("#meetingPlace");
+		const submit = document.querySelector("#submitMeeting");
+
+		$("#requestMeeting").on('show.bs.modal', (event) => {
+			bidAmount.value = rhit.fbSingleItemManager.priceRange.high;
+		});
+
+		submit.addEventListener('click', (event) => {
+			console.log(bidAmount.value, ' ', meetingDate.value, ' ', meetingTime.value, ' ', meetingPlace.value);
+
+			const meetingDetails = this._makeMeetingDetailObj(bidAmount.value, meetingPlace.value, meetingDate.value, meetingTime.value);
+			const requester = this._makeUserObj(rhit.fbAuthManager.uid, rhit.fbUserManager.name);
+			const requestee = this._makeUserObj(rhit.fbSingleItemManager.seller, rhit.fbSingleItemManager.sellerName);
+			const itemDetails = this._makeItemObj(rhit.fbSingleItemManager.id, rhit.fbSingleItemManager.name, rhit.fbSingleItemManager.photoUrl);
+
+			rhit.fbAppointmentManager.newProposal(itemDetails, requestee, requester, meetingDetails);
+			$("#success").snackbar("toggle");
+		});
+
 		console.log("name ", rhit.fbSingleItemManager.name);
 		console.log("description", rhit.fbSingleItemManager.description);
 		console.log("category", rhit.fbSingleItemManager.category);
 		console.log("price low ", rhit.fbSingleItemManager.priceRange.low);
 		console.log("price high ", rhit.fbSingleItemManager.priceRange.high);
 		console.log("photoUrl", rhit.fbSingleItemManager.photoUrl);
+		console.log("isActive", rhit.fbSingleItemManager.isActive);
 
 		const favs = rhit.fbUserManager.favorites;
 		const favoriteIcon = document.querySelector("#favoritedContainer");
@@ -90,7 +150,8 @@ rhit.ItemDetailPage = class {
 					favs.push({
 						id: this._itemId,
 						name: rhit.fbSingleItemManager.name,
-						priceRange: rhit.fbSingleItemManager.priceRange
+						priceRange: rhit.fbSingleItemManager.priceRange,
+						photoUrl: rhit.fbSingleItemManager.photoUrl
 					});
 				}
 			} else if (favoriteIcon.innerHTML == rhit.ItemDetailPage.ICON_STATUS.UN_FAV){

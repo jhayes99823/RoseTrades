@@ -7,6 +7,12 @@ html {
     height: 100%;
 }
 
+img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+  }
+
 .page-container {
     margin-top: 75px;
 }
@@ -258,4 +264,32 @@ html {
   .time-left {
     float: left;
     color: #999;
+  }
+
+  #favoritedContainer {
+    cursor: pointer;
+  }
+
+  #warningContainer {
+      cursor: pointer;
+  }
+
+  .snackbar.snackbar-opened {
+    padding: 14px 15px;
+    margin-bottom: 20px;
+    height: auto;
+    -moz-transition: -moz-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0 linear 0.2s;
+    -webkit-transition: -webkit-transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0 linear 0.2s;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in, height 0 linear 0.2s, height 0 linear 0.2s;
+    -moz-transform: none;
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  .list-group-item:hover {
+    cursor: pointer;
+  }
+
+  #deleteIcon {
+      cursor: pointer;
   }

@@ -23,6 +23,7 @@ rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_USERNAME = "username";
 rhit.FB_KEY_NAME = "name";
 rhit.FB_KEY_FAVORITE_ITEMS = "favorites";
+rhit.FB_KEY_PENDING_REQUESTS = "pending_reqs";
 
 /**
  * 
@@ -53,6 +54,9 @@ rhit.fbUserItemManager = null;
 rhit.fbAllItemManager = null
 rhit.fbSingleItemManager = null;
 rhit.fbChatsManager = null;
+rhit.fbAppointmentManager = null;
+rhit.fbSingleAppointmentManager = null;
+rhit.fbUserManagerLite = null;
 
 /**
  * 
@@ -64,6 +68,22 @@ rhit.fbChatsManager = null;
 rhit.FB_COLLECITON_CHATS = "chats";
 rhit.FB_KEY_PEOPLE = "people";
 rhit.FB_KEY_MESSAGES = "messages";
+
+/**
+ * 
+ * 
+ * APPOINTMENT COLLECTION VARIABLES
+ * 
+ * 
+ */
+
+rhit.FB_COLLECTION_APPOINTMENTS = 'appointments';
+rhit.FB_KEY_USER_REQUESTED = 'requestee';
+rhit.FB_KEY_REQUESTER = 'requester';
+rhit.FB_KEY_PROPOSALS = 'proposals';
+rhit.FB_KEY_ITEM_DETAILS = 'itemID';
+rhit.FB_KEY_MEETING_DETAILS = 'meetingDetails';
+rhit.FB_KEY_STATUS = 'status';
 
 /**
  * 
@@ -92,6 +112,17 @@ rhit.FB_KEY_MESSAGES = "messages";
 		this.messages = messages;
 	 }
  }
+
+rhit.Appointment = class {
+	constructor(id, itemDetails, requester, requestee, proposals, status) {
+		this.id = id;
+		this.itemDetails = itemDetails;
+		this.requester = requester;
+		this.requestee = requestee;
+		this.proposals = proposals;
+		this.status = status;
+	}
+}
 
 /**
  * 
@@ -161,7 +192,6 @@ rhit.FbAuthManager = class {
 	}
 }
 
-
 rhit.FbUserManager = class {
 	constructor() {
 		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS);
@@ -207,6 +237,7 @@ rhit.FbUserManager = class {
 				return userRef.set({
 					[rhit.FB_KEY_NAME]: name,
 					[rhit.FB_KEY_FAVORITE_ITEMS]: [],
+					[rhit.FB_KEY_PENDING_REQUESTS]: 0
 				}).then(() => {
 					return true;
 				});
@@ -246,6 +277,60 @@ rhit.FbUserManager = class {
 
 	get favorites() {
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
+	}
+
+	get pendingReqs() {
+		return this._document.get(rhit.FB_KEY_PENDING_REQUESTS) || 0;
+	}
+}
+
+rhit.FbUserManagerLite = class {
+	constructor(uid) {
+		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS).doc(uid);
+		this._document = null;
+	}
+
+	beginListening() {
+		this._collectoinRef.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._document = doc;
+				console.log('doc.data() :', doc.data());
+			} else {
+				console.log("This User object does not exist! (that's bad)");
+			}
+		});
+	}
+
+	updatePendingReqs() {
+		let currPendingReqs = this.pendingReqs + 1;
+		console.log('new pending reqs  ', currPendingReqs);
+		return this._collectoinRef.update({
+			[rhit.FB_KEY_PENDING_REQUESTS]: currPendingReqs
+		}).then(() => {
+			console.log("Document successfully updated with name!");
+		})
+		.catch(function (error) {
+			console.error("Error updating document: ", error);
+		});
+	}
+
+	deletePendingReq() {
+		if (this.pendingReqs > 0) {
+			let currPendingReqs = this.pendingReqs - 1;
+			console.log('new pending reqs  ', currPendingReqs);
+			return this._collectoinRef.update({
+				[rhit.FB_KEY_PENDING_REQUESTS]: currPendingReqs
+			}).then(() => {
+				console.log("Document successfully updated with name!");
+			})
+			.catch(function (error) {
+				console.error("Error updating document: ", error);
+			});
+		}
+	}
+
+	get pendingReqs() {
+		return this._document.get(rhit.FB_KEY_PENDING_REQUESTS) || 0;
 	}
 }
 
@@ -313,8 +398,6 @@ rhit.FbUserItemManager = class {
 	get id(){
 		return this._id;
 	}
-
-
 
 	getItemAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
@@ -581,6 +664,169 @@ rhit.FbChatsManager = class {
 	}
 }
 
+rhit.FbAppointmentManager = class {
+	static STATUS = {
+		PENDING: 'PENDING',
+		ACCEPTED: 'ACCEPTED',
+		DECLINED: 'DECLINED'
+	}
+
+	constructor(itemID) {
+		this._itemID = itemID;
+		this._documentSnapshots = [];
+		this._unsubscribe = null;
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_APPOINTMENTS);		
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
+	}
+	
+
+	newProposal(itemDetails, requestee, requester, meetinDetails) {
+		rhit.fbUserManagerLite = new rhit.FbUserManagerLite(requestee.username);
+		rhit.fbUserManagerLite.beginListening();
+
+		this._ref.add({
+			[rhit.FB_KEY_ITEM_DETAILS]: itemDetails,
+			[rhit.FB_KEY_REQUESTER]: requester,
+			[rhit.FB_KEY_USER_REQUESTED]: requestee,
+			[rhit.FB_KEY_PROPOSALS]: [meetinDetails],
+			[rhit.FB_KEY_STATUS]: rhit.FbAppointmentManager.STATUS.PENDING
+		}).then(function (docRef) {
+			console.log("Document written in ID: ", docRef.id);
+			rhit.fbUserManagerLite.updatePendingReqs();
+		})
+		.catch((error) => {
+			console.log("Error getting document: ", error);
+		});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getItemAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		const appointment = new rhit.Appointment(
+		  docSnapshot.id,
+		  docSnapshot.get(rhit.FB_KEY_ITEM_DETAILS),
+		  docSnapshot.get(rhit.FB_KEY_REQUESTER),
+		  docSnapshot.get(rhit.FB_KEY_USER_REQUESTED),
+		  docSnapshot.get(rhit.FB_KEY_PROPOSALS),
+		  docSnapshot.get(rhit.FB_KEY_STATUS)
+		);
+		return appointment;
+	}
+}
+
+rhit.FbSingleAppointmentManager = class {
+	constructor(id) {
+		this._id = id;
+		this._documentSnapshot = {};
+		this._unsubscribe = null;
+		this._ref = firebase
+		  .firestore()
+		  .collection(rhit.FB_COLLECTION_APPOINTMENTS)
+		  .doc(id);
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+				changeListener();
+			} else {
+				console.log("no such document");
+			}
+		});
+	
+		this._ref
+			.get()
+			.then((doc) => {
+			if (doc.exists) {
+				this._documentSnapshot = doc;
+			} else {
+				window.location.href = "/appointments.html";
+			}
+			})
+			.catch((error) => {
+			console.log("Error getting document: ", error);
+			});
+	}
+	
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	acceptMeeting() {
+		rhit.fbUserManagerLite = new rhit.FbUserManagerLite(this.requestee.username);
+		rhit.fbUserManagerLite.beginListening();
+
+		return this._ref.update({
+			[rhit.FB_KEY_STATUS]: rhit.FbAppointmentManager.STATUS.ACCEPTED
+		}).then(() => {
+			console.log("Document successfully updated status!");
+			rhit.fbUserManagerLite.deletePendingReq();
+		})
+		.catch(function (error) {
+			console.error("Error updating document: ", error);
+		});
+	}
+
+	declineMeeting() {
+		rhit.fbUserManagerLite = new rhit.FbUserManagerLite(this.requestee.username);
+		rhit.fbUserManagerLite.beginListening();
+
+		return this._ref.update({
+			[rhit.FB_KEY_STATUS]: rhit.FbAppointmentManager.STATUS.DECLINED
+		}).then(() => {
+			console.log("Document successfully updated status!");
+			rhit.fbUserManagerLite.deletePendingReq();
+		})
+		.catch(function (error) {
+			console.error("Error updating document: ", error);
+		});
+	}
+
+	deleteMeeting() {
+		return this._ref.delete().then(() => {
+			console.log("Doc successfully deleted");
+			window.location.href = '/appointments.html';
+		  })
+		  .catch((error) => {
+			console.log("Error deleting document: ", error);
+		  });
+	}
+
+	get itemDetails() {
+		return this._documentSnapshot.get(rhit.FB_KEY_ITEM_DETAILS);
+	}
+	
+	get proposals() {
+		return this._documentSnapshot.get(rhit.FB_KEY_PROPOSALS);
+	}
+
+	get status() {
+		return this._documentSnapshot.get(rhit.FB_KEY_STATUS);
+	}
+
+	get requester() {
+		return this._documentSnapshot.get(rhit.FB_KEY_REQUESTER);
+	}
+
+	get requestee() {
+		return this._documentSnapshot.get(rhit.FB_KEY_USER_REQUESTED);
+	}
+}
+
 /**
  * 
  * 
@@ -600,17 +846,32 @@ rhit.LoginPageController = class {
 
 rhit.NavBarController = class {
 	constructor(newTab) {
+		this._newTab = newTab;
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+	}
+
+	updateView() {
+		console.log('pending reqs:   ', rhit.fbUserManager.pendingReqs);
+
 		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
 		});
 		
-		console.log('newTab   ', newTab);
+		console.log('newTab   ', this._newTab);
 		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
+
+		if (rhit.fbUserManager.pendingReqs) {
+			document.querySelector("#appointments").innerHTML = `Appointments <span class="badge badge-warning">${rhit.fbUserManager.pendingReqs} Pending</span>`;
+		}
+
 		$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).removeClass('active');
-		rhit.CURR_PAGE_INDEX = rhit.PAGES.indexOf(newTab);
+
+		rhit.CURR_PAGE_INDEX = rhit.PAGES.indexOf(this._newTab);
+
 		if (rhit.CURR_PAGE_INDEX > -1) {
 			$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).addClass('active');
 		}
+
 		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
 	}
 }
@@ -790,6 +1051,7 @@ rhit.initializePage = function () {
 		const id = urlParams.get("id");
 		new rhit.NavBarController('');
 		rhit.fbSingleItemManager = new rhit.FbSingleItemManager(id);
+		rhit.fbAppointmentManager = new rhit.FbAppointmentManager(id);
 		new rhit.ItemDetailPage(id);
 	}
 
@@ -822,6 +1084,22 @@ rhit.initializePage = function () {
 		const receiverName = urlParams.get('receiverName');
 		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
 		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
+	}
+
+	if (document.querySelector("#appointmentListPage")) {
+		new rhit.NavBarController('appointments');
+		console.log('You are on the appointment list page');
+		rhit.fbAppointmentManager = new rhit.FbAppointmentManager();
+		new rhit.AppointmentListPageController();
+	}
+
+	if (document.querySelector("#appointmentDetailPage")) {
+		new rhit.NavBarController('');
+		console.log('You are on the appointment detail page');
+		const id = urlParams.get("id");
+		const isRequester = urlParams.get("isRequester");
+		rhit.fbSingleAppointmentManager = new rhit.FbSingleAppointmentManager(id);
+		new rhit.AppointmentDetailPageController(isRequester);
 	}
 };
 

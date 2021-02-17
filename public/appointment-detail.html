@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="styles/bootstrap-material-design.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <title>Rose Trades</title>
+</head>
+
+<body>
+  <nav id="commonNavBar" class="navbar fixed-top navbar-expand-md navbar-dark bg-dark mb-3">
+    <div class="flex-row d-flex">
+      <button type="button" class="navbar-toggler mr-2" data-toggle="offcanvas">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">Rose Trades</a>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="collapsingNavbar">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="main-list.html" id="home">Home<span class="sr-only">Home</span></a>
+        </li>
+       
+        <li class="nav-item"><a id="account" class="nav-link side-bar-nav" href="account-page.html">Account</a></li>
+        <li class="nav-item"><a id="chats" class="nav-link side-bar-nav" href="chat-list.html">Chats</a></li>
+        <li class="nav-item">
+          <a class="nav-link side-bar-nav" id="favorites" href="favorites.html">Favorites</a>
+        </li>
+        <li class="nav-item"><a id="my_items" class="nav-link side-bar-nav" href="my-item.html">My Items</a></li>
+        <li class="nav-item">
+          <a class="nav-link side-bar-nav" id="appointments" href="appointments.html">Appointments</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" id="logout" href="">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div id="appointmentDetailPage" class="container page-container">
+    <div class="d-flex w-100 justify-content-between">
+        <h5 id="statusLabel" class="mb-1">STATUS - PENDING</h5>
+        <span id="deleteIcon" hidden class="material-icons" style="color: red;">delete</span>
+    </div>
+    <h4>Item Details</h4>
+    <div class="form-group mx-auto">
+        <label for="itemName">Item Name</label>
+        <input type="text" class="form-control-plaintext" id="itemName" disabled>
+    </div>
+    <div class="form-group mx-auto">
+        <img id="photo" class="card-img-top" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22290%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20290%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17730751f77%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17730751f77%22%3E%3Crect%20width%3D%22290%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2294.4453125%22%20y%3D%22119.1%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+    </div>
+    <h4>Meeting Details</h4>
+    <div class="form-group mx-auto">
+        <label for="bidAmount">Bid Amount</label>
+        <input type="text" class="form-control-plaintext" id="bidAmount" disabled>
+    </div>
+    <div class="form-group mx-auto">
+        <label for="meetingDate">Meeting Date</label>
+        <input type="date" class="form-control-plaintext" id="meetingDate" disabled>
+    </div>
+    <div class="form-group mx-auto">
+        <label for="meetingTime">Meeting Time</label>
+        <input type="time" class="form-control-plaintext" id="meetingTime" disabled>
+    </div>
+    <div class="form-group mx-auto">
+        <label for="meetingPlace">Meeting Location</label>
+        <input type="text" class="form-control-plaintext" id="meetingPlace" disabled>
+    </div>
+    <div id="statusAction" hidden class="row justify-content-center">
+        <button id="declineMeeting" data-toggle="modal" data-target="#declineMeetingModal" type="button" class="col-2  mb-5 btn btn-danger active">
+          Decline Meeting
+        </button>
+        <button id="acceptMeeting" type="button" class="col-2 ml-5  mb-5 btn btn-success active">
+          Accept Meeting
+        </button>
+      </div>
+        <!-- Decline Modal -->
+        <div class="modal fade" id="declineMeetingModal" tabindex="-1" role="dialog" aria-labelledby="Decline Meeting" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered model-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Decline Meeting</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you wish to decline the meeting?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                    <button type="button" id="submitDeclineMeeting" class="btn btn-primary" data-dismiss="modal">Decline</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/popper.js"></script>
+  <script src="scripts/bootstrap-material-design.js"></script>
+  <script>$("body").bootstrapMaterialDesign();</script>
+  <script src="/__/firebase/7.18.0/firebase-app.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-analytics.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
+  <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="scripts/appointment-detail-controller.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>
