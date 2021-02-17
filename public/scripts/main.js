@@ -23,6 +23,7 @@ rhit.FB_COLLECTION_USERS = "Users";
 rhit.FB_KEY_USERNAME = "username";
 rhit.FB_KEY_NAME = "name";
 rhit.FB_KEY_FAVORITE_ITEMS = "favorites";
+rhit.FB_KEY_PENDING_REQUESTS = "pending_reqs";
 
 /**
  * 
@@ -54,6 +55,7 @@ rhit.fbAllItemManager = null
 rhit.fbSingleItemManager = null;
 rhit.fbChatsManager = null;
 rhit.fbAppointmentManager = null;
+rhit.fbUserManagerLite = null;
 
 /**
  * 
@@ -80,6 +82,7 @@ rhit.FB_KEY_REQUESTER = 'requester';
 rhit.FB_KEY_PROPOSALS = 'proposals';
 rhit.FB_KEY_ITEM_ID = 'itemID';
 rhit.FB_KEY_MEETING_DETAILS = 'meetingDetails';
+rhit.FB_KEY_STATUS = 'status';
 
 /**
  * 
@@ -108,6 +111,17 @@ rhit.FB_KEY_MEETING_DETAILS = 'meetingDetails';
 		this.messages = messages;
 	 }
  }
+
+rhit.Appointment = class {
+	constructor(id, itemId, requester, requestee, proposals, status) {
+		this.id = id;
+		this.itemId = itemId;
+		this.requester = requester;
+		this.requestee = requestee;
+		this.proposals = proposals;
+		this.status = status;
+	}
+}
 
 /**
  * 
@@ -176,7 +190,6 @@ rhit.FbAuthManager = class {
 		return this._user.uid;
 	}
 }
-
 
 rhit.FbUserManager = class {
 	constructor() {
@@ -263,6 +276,46 @@ rhit.FbUserManager = class {
 	get favorites() {
 		return this._document.get(rhit.FB_KEY_FAVORITE_ITEMS) || [];
 	}
+
+	get pendingReqs() {
+		return this._document.get(rhit.FB_KEY_PENDING_REQUESTS) || 0;
+	}
+}
+
+rhit.FbUserManagerLite = class {
+	constructor(uid) {
+		this._collectoinRef = firebase.firestore().collection(rhit.FB_COLLECTION_USERS).doc(uid);
+		this._document = null;
+	}
+
+	beginListening() {
+		this._collectoinRef.onSnapshot((doc) => {
+			if (doc.exists) {
+				this._document = doc;
+				console.log('doc.data() :', doc.data());
+			} else {
+				console.log("This User object does not exist! (that's bad)");
+			}
+		});
+	}
+
+	updatePendingReqs() {
+		console.log('made it here ');
+		let currPendingReqs = this.pendingReqs + 1;
+		console.log('new pending reqs  ', currPendingReqs);
+		return this._collectoinRef.update({
+			[rhit.FB_KEY_PENDING_REQUESTS]: currPendingReqs
+		}).then(() => {
+			console.log("Document successfully updated with name!");
+		})
+		.catch(function (error) {
+			console.error("Error updating document: ", error);
+		});
+	}
+
+	get pendingReqs() {
+		return this._document.get(rhit.FB_KEY_PENDING_REQUESTS) || 0;
+	}
 }
 
 rhit.FbUserItemManager = class {
@@ -329,8 +382,6 @@ rhit.FbUserItemManager = class {
 	get id(){
 		return this._id;
 	}
-
-
 
 	getItemAtIndex(index) {
 		const docSnapshot = this._documentSnapshots[index];
@@ -598,6 +649,12 @@ rhit.FbChatsManager = class {
 }
 
 rhit.FbAppointmentManager = class {
+	static STATUS = {
+		PENDING: 'PENDING',
+		ACCEPTED: 'ACCEPTED',
+		DECLINED: 'DECLINED'
+	}
+
 	constructor(itemID) {
 		this._itemID = itemID;
 		this._documentSnapshots = [];
@@ -605,17 +662,52 @@ rhit.FbAppointmentManager = class {
 		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_APPOINTMENTS);		
 	}
 
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((querySnapshot) => {
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
+	}
+	
+
 	newProposal(requestee, requester, meetinDetails) {
+		rhit.fbUserManagerLite = new rhit.FbUserManagerLite(requestee.username);
+		rhit.fbUserManagerLite.beginListening();
+
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_ID]: this._itemID,
 			[rhit.FB_KEY_REQUESTER]: requester,
 			[rhit.FB_KEY_USER_REQUESTED]: requestee,
-			[rhit.FB_KEY_PROPOSALS]: [meetinDetails]
+			[rhit.FB_KEY_PROPOSALS]: [meetinDetails],
+			[rhit.FB_KEY_STATUS]: rhit.FbAppointmentManager.STATUS.PENDING
 		}).then(function (docRef) {
 			console.log("Document written in ID: ", docRef.id);
-		}).catch((error) => {
+			rhit.fbUserManagerLite.updatePendingReqs();
+		})
+		.catch((error) => {
 			console.log("Error getting document: ", error);
 		});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getItemAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		const appointment = new rhit.Appointment(
+		  docSnapshot.id,
+		  docSnapshot.get(rhit.FB_KEY_ITEM_ID),
+		  docSnapshot.get(rhit.FB_KEY_REQUESTER),
+		  docSnapshot.get(rhit.FB_KEY_USER_REQUESTED),
+		  docSnapshot.get(rhit.FB_KEY_PROPOSALS),
+		  docSnapshot.get(rhit.FB_KEY_STATUS)
+		);
+		return appointment;
 	}
 }
 
@@ -638,17 +730,30 @@ rhit.LoginPageController = class {
 
 rhit.NavBarController = class {
 	constructor(newTab) {
+		this._newTab = newTab;
+		rhit.fbUserManager.beginListening(rhit.fbAuthManager.uid, this.updateView.bind(this));
+	}
+
+	updateView() {
+		console.log('pending reqs:   ', rhit.fbUserManager.pendingReqs);
+
 		document.querySelector("#logout").addEventListener("click", (event) => {
 			rhit.fbAuthManager.signOut();
 		});
 		
-		console.log('newTab   ', newTab);
+		console.log('newTab   ', this._newTab);
 		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
+
+		document.querySelector("#appointments").innerHTML = `Appointments <span class="badge badge-warning">${rhit.fbUserManager.pendingReqs} Pending</span>`;
+
 		$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).removeClass('active');
-		rhit.CURR_PAGE_INDEX = rhit.PAGES.indexOf(newTab);
+
+		rhit.CURR_PAGE_INDEX = rhit.PAGES.indexOf(this._newTab);
+
 		if (rhit.CURR_PAGE_INDEX > -1) {
 			$("#" + rhit.PAGES[rhit.CURR_PAGE_INDEX]).addClass('active');
 		}
+
 		console.log('curr page index ', rhit.CURR_PAGE_INDEX);
 	}
 }
@@ -861,6 +966,13 @@ rhit.initializePage = function () {
 		const receiverName = urlParams.get('receiverName');
 		rhit.fbChatsManager = new rhit.FbChatsManager(senderUID, receiverUID);
 		new rhit.ChatPageController(senderUID, receiverUID, receiverName);
+	}
+
+	if (document.querySelector("#appointmentListPage")) {
+		new rhit.NavBarController('appointments');
+		console.log('You are on the appointment list page');
+		rhit.fbAppointmentManager = new rhit.FbAppointmentManager();
+		new rhit.AppointmentListPageController();
 	}
 };
 

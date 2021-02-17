@@ -102,6 +102,7 @@ rhit.ItemDetailPage = class {
 		submit.addEventListener('click', (event) => {
 			console.log(bidAmount.value, ' ', meetingDate.value, ' ', meetingTime.value, ' ', meetingPlace.value);
 			const meetingDetails = this._makeMeetingDetailObj(bidAmount.value, meetingPlace.value, meetingDate.value, meetingTime.value);
+			
 			const requester = {
 				username: rhit.fbAuthManager.uid,
 				name: rhit.fbUserManager.name
