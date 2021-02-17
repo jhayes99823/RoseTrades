@@ -47,6 +47,20 @@ rhit.ItemDetailPage = class {
 		};
 	}
 
+	_makeUserObj(username, name) {
+		return {
+			username,
+			name
+		};
+	}
+
+	_makeItemObj(id, name, photoURL) {
+		return {
+			id,
+			name,
+			photoURL
+		};
+	}
 
 	updateView() {
 		document.querySelector("#choseItemName").value = rhit.fbSingleItemManager.name;
@@ -101,19 +115,13 @@ rhit.ItemDetailPage = class {
 
 		submit.addEventListener('click', (event) => {
 			console.log(bidAmount.value, ' ', meetingDate.value, ' ', meetingTime.value, ' ', meetingPlace.value);
+
 			const meetingDetails = this._makeMeetingDetailObj(bidAmount.value, meetingPlace.value, meetingDate.value, meetingTime.value);
-			
-			const requester = {
-				username: rhit.fbAuthManager.uid,
-				name: rhit.fbUserManager.name
-			};
+			const requester = this._makeUserObj(rhit.fbAuthManager.uid, rhit.fbUserManager.name);
+			const requestee = this._makeUserObj(rhit.fbSingleItemManager.seller, rhit.fbSingleItemManager.sellerName);
+			const itemDetails = this._makeItemObj(rhit.fbSingleItemManager.id, rhit.fbSingleItemManager.name, rhit.fbSingleItemManager.photoUrl);
 
-			const requestee = {
-				username: rhit.fbSingleItemManager.seller,
-				name: rhit.fbSingleItemManager.sellerName
-			};
-
-			rhit.fbAppointmentManager.newProposal(requestee, requester, meetingDetails);
+			rhit.fbAppointmentManager.newProposal(itemDetails, requestee, requester, meetingDetails);
 			$("#success").snackbar("toggle");
 		});
 
@@ -142,7 +150,8 @@ rhit.ItemDetailPage = class {
 					favs.push({
 						id: this._itemId,
 						name: rhit.fbSingleItemManager.name,
-						priceRange: rhit.fbSingleItemManager.priceRange
+						priceRange: rhit.fbSingleItemManager.priceRange,
+						photoUrl: rhit.fbSingleItemManager.photoUrl
 					});
 				}
 			} else if (favoriteIcon.innerHTML == rhit.ItemDetailPage.ICON_STATUS.UN_FAV){

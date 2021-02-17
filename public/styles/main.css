@@ -285,3 +285,11 @@ img {
     -webkit-transform: none;
     transform: none;
   }
+
+  .list-group-item:hover {
+    cursor: pointer;
+  }
+
+  #deleteIcon {
+      cursor: pointer;
+  }

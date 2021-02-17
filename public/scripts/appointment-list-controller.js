@@ -17,28 +17,36 @@ rhit.AppointmentListPageController = class {
     }
 
     updateView() {
+        let requesteeCount = 0;
+        let requesterCount = 0;
         const newList = htmlToElement('<div id="appointment-list"> <h4>Your Requested Meetings</h4> </div>');
 
         for (let i = 0; i < rhit.fbAppointmentManager.length; i++) {
             const appointment = rhit.fbAppointmentManager.getItemAtIndex(i);
 
-
             if (appointment.requester.username === rhit.fbAuthManager.uid) {
+                requesterCount++;
                 let listCard = null;
 
                 listCard = this._createCardList(appointment);
+
+                listCard.onclick = (event) => {
+                    window.location.href = `/appointment-detail.html?id=${appointment.id}&isRequester=true`;
+                }
 
                 newList.appendChild(listCard);
             }
 
         }
 
-        const oldList = document.querySelector("#appointment-list");
-		oldList.removeAttribute("id");
-		oldList.hidden = true;
-	
-		// put in new quoteListContainer
-        oldList.parentElement.appendChild(newList);
+        if (requesterCount > 0) {
+            const oldList = document.querySelector("#appointment-list");
+            oldList.removeAttribute("id");
+            oldList.hidden = true;
+        
+            // put in new quoteListContainer
+            oldList.parentElement.appendChild(newList);
+        }
 
 
         const requesteeList = htmlToElement('<div id="request-list" class="mt-3"> <h4>Requested Meetings With You</h4> </div>')
@@ -48,21 +56,28 @@ rhit.AppointmentListPageController = class {
 
 
             if (appointment.requestee.username === rhit.fbAuthManager.uid) {
+                requesteeCount++;
                 let listCard = null;
 
                 listCard = this._createCardList(appointment);
+
+                listCard.onclick = (event) => {
+                    window.location.href = `/appointment-detail.html?id=${appointment.id}&isRequester=false`;
+                }
 
                 requesteeList.appendChild(listCard);
             }
 
         }
 
-        const oldReqList = document.querySelector("#request-list");
-		oldReqList.removeAttribute("id");
-		oldReqList.hidden = true;
-	
-		// put in new quoteListContainer
-        oldReqList.parentElement.appendChild(requesteeList);
+        if (requesteeCount > 0) {
+            const oldReqList = document.querySelector("#request-list");
+            oldReqList.removeAttribute("id");
+            oldReqList.hidden = true;
+        
+            // put in new quoteListContainer
+            oldReqList.parentElement.appendChild(requesteeList);
+        }
     }
 
     _createCardList(appointment) {
