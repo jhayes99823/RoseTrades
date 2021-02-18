@@ -75,6 +75,8 @@ rhit.ChatPageController = class {
 
                     newList.appendChild(messageCard);
                 }
+                let emptyChild = this._createPlaceHolderDiv();
+                newList.appendChild(emptyChild);
             }
         }
 
@@ -84,6 +86,17 @@ rhit.ChatPageController = class {
 	
 		// put in new quoteListContainer
         oldList.parentElement.appendChild(newList);
+    }
+
+
+    _createPlaceHolderDiv(){
+        return htmlToElement(
+            `
+            <div  id = "emptyPlaceHolder">
+                
+            </div>
+            `
+        );
     }
 
     _createSenderCard(message) {

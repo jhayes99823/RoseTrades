@@ -229,7 +229,7 @@ img {
   }
 
  #input-chat-row{
-    z-index: 99;
+    
     background-color: #7e7e80;
     color: white;
     width: 69em; 
@@ -249,6 +249,10 @@ img {
     top: 3px;
 }
 
+
+#emptyPlaceHolder{
+    height : 40px;
+}
 
   /* Darker chat container */
   .darker {
