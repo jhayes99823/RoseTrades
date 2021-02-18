@@ -348,7 +348,7 @@ rhit.FbUserItemManager = class {
 	add(name, description, priceRange, category, sellerName, file, keywords) {
 		this._ref.add({
 			[rhit.FB_KEY_ITEM_NAME]: name,
-			[rhit.FB_KEY_CATEGORY]: rhit.FbUserItemManager.CATEGORIES[category - 1],
+			[rhit.FB_KEY_CATEGORY]: category,
 			[rhit.FB_KEY_DESCRIPTION]: description,
 			[rhit.FB_KEY_PRICE]: priceRange,
 			[rhit.FB_KEY_SELLER]: rhit.fbAuthManager.uid,
@@ -438,7 +438,7 @@ rhit.FbAllItemManager = class {
 						.where(rhit.FB_KEY_ISACTIVE, "==", true);
 						
 		if (category != '') {
-			query = query.where(rhit.FB_KEY_CATEGORY, '==', rhit.FbAllItemManager.CATEGORIES[category - 1]);
+			query = query.where(rhit.FB_KEY_CATEGORY, '==', category);
 		}
 
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
