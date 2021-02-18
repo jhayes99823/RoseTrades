@@ -103,6 +103,9 @@ img {
     max-width: 100%;
 }
 
+#commonNavBar{
+    z-index: 99;
+}
 
 
 .scheduleButton{
@@ -224,7 +227,29 @@ img {
     padding: 10px;
     margin: 10px 0;
   }
-  
+
+ #input-chat-row{
+    z-index: 99;
+    background-color: #7e7e80;
+    color: white;
+    width: 69em; 
+    border-radius: 5px;
+ }
+#messageInput{
+    color: white;
+    margin-left: 10px;
+    padding: 0 10px;
+}
+#inputwrapper ::placeholder{
+    color: white;
+}
+#enterBtn{
+    display: relative;
+    left: -5px;
+    top: 3px;
+}
+
+
   /* Darker chat container */
   .darker {
     border-color: #ccc;
