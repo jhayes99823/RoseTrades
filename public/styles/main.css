@@ -145,6 +145,11 @@ img {
         margin: 40px 60px;
     }
 
+    .appointment-detail-title{
+        width: 500px;
+        margin: 40px 60px;
+        
+    }
     /* #createAccountButton{
         position: relative;
         background-color: #ff4d00;
