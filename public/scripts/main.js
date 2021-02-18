@@ -658,9 +658,15 @@ rhit.FbChatsManager = class {
 		});
 	}
 
-	delete() {
+	delete(id) {
 		console.log("item successfully DELETED");
-		return this._ref.delete();
+		return this._ref.doc(id)
+					.delete()
+					.then(() => {
+						window.location.href = '/chat-list.html';
+					}).catch((error) => {
+						console.log('error:  ', error);
+					})
 	}
 }
 

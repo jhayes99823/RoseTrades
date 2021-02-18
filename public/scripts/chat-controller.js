@@ -43,6 +43,14 @@ rhit.ChatPageController = class {
                 rhit.fbChatsManager.addNewChatString([{"username": this._sender, "name": rhit.fbUserManager.name}, {"username": this._receiver, "name": this._receiverName}], [{message: messageInput.value, sender: this._sender}]);
             }
         });
+
+        document.querySelector("#submitDeleteChat").addEventListener('click', (event) => {
+            if (this._currChatIndex > -1) {
+                let chat = rhit.fbChatsManager.getItemAtIndex(this._currChatIndex);
+                console.log('chat id  ', chat.id);
+                rhit.fbChatsManager.delete(chat.id);
+            }
+        });
     
         rhit.fbChatsManager.beginListening(this.updateView.bind(this));
     }
@@ -86,6 +94,10 @@ rhit.ChatPageController = class {
 	
 		// put in new quoteListContainer
         oldList.parentElement.appendChild(newList);
+
+        if (this._currChatIndex < 0) {
+            $("#deleteIcon").attr('hidden', false);
+        }
     }
 
 

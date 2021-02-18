@@ -46,7 +46,7 @@
   </nav>
   
   <div id="chatPage" class="container page-container">
-    
+    <span id="deleteIcon" class="material-icons" data-toggle="modal" data-target="#confirmChatDelete" style="color: red;">delete</span>
       <div id="chats-list">
         <!-- <div class="chat-container">
             <p>Hello. How are you today?</p>
@@ -59,17 +59,32 @@
         </div> -->
       </div>
       
-      <div class="fixed-bottom mx-auto" id = "input-chat-row">
-        <div class="input-group " id = "inputwrapper">
-            <input id="messageInput" type="text" class="form-control" placeholder="Type your message here...">
-            <span class="input-group-btn">
-              <button id="enterBtn" class="btn btn-default main-btn" type="button">Send</button>
-            </span>
-        </div>
-    
+    <div class="fixed-bottom mx-auto" id = "input-chat-row">
+      <div class="input-group " id = "inputwrapper">
+          <input id="messageInput" type="text" class="form-control" placeholder="Type your message here...">
+          <span class="input-group-btn">
+            <button id="enterBtn" class="btn btn-default main-btn" type="button">Send</button>
+          </span>
+      </div>
     </div>
-       
-    </div>
+    <!-- Decline Modal -->
+    <div class="modal fade" id="confirmChatDelete" tabindex="-1" role="dialog" aria-labelledby="Delete Chat Chain" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered model-lg" role="document">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">Delete Chat</h5>
+          </div>
+          <div class="modal-body">
+            <p>Deleting this chat will delete for both people involved.</p>
+            <p>Are you sure you wish to delete this chat?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+              <button type="button" id="submitDeleteChat" class="btn btn-primary" data-dismiss="modal">Delete</button>
+          </div>
+          </div>
+      </div>
+  </div>
   </div>
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
