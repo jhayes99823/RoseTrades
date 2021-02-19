@@ -22,12 +22,12 @@ rhit.EditItemDetailController = class {
 			rhit.fbSingleItemManager.updateActiveStatus();
 		});
 
-		document.querySelector("#deleteItemBtn").onclick = (event) => {
-			console.log("delete button pressed");
-			rhit.fbSingleItemManager.delete().then((event) => {
-				window.location.href = "/my-item.html";
-			});
-		}
+		// document.querySelector("#deleteItemBtn").onclick = (event) => {
+		// 	console.log("delete button pressed");
+		// 	rhit.fbSingleItemManager.delete().then((event) => {
+		// 		window.location.href = "/my-item.html";
+		// 	});
+		// }
 
 		document.querySelector("#photo").onclick = (event) => {
 			const desertRef  = firebase.storage().ref().child(rhit.fbSingleItemManager.id);
