@@ -23,7 +23,8 @@ rhit.MainPageController = class {
 
 		searchbar.addEventListener("focusout", (event) => {
 			searchbar.value = "";
-		})
+			rhit.fbAllItemManager.beginListening(this.updateList.bind(this));
+		});
 
 
 		document.querySelector("#submitFilterOptions").addEventListener("click", (event) => {
@@ -31,7 +32,7 @@ rhit.MainPageController = class {
 			category = (category == 0) ? 1 : category; 
 			rhit.fbAllItemManager.beginListening(this.updateList.bind(this), category);
 
-			document.querySelector("#itemCategory").value = 0;
+			document.querySelector("#itemCategory").value = category;
 
 			$("#removeFilterBtn").attr('hidden', false);
 		});
